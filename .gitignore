@@ -1,2 +1,5 @@
-DualBaccarat/
-!DualBaccrat/Classes/
+DualBaccarat/bin/
+DualBaccarat/cocos2d/
+DualBaccarat/proj.android/
+DualBaccarat/proj.win32/
+DualBaccarat/Resources/
