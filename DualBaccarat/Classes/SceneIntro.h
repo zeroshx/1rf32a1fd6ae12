@@ -7,6 +7,7 @@
 #include "DialogBuilder.h"
 #include "ProgressCircle.h"
 #include "TextureLoadingManager.h"
+#include "SceneLobby.h"
 
 class SceneIntro : public cocos2d::Layer, public TextureLoadingDelegate, public DialogDelegate
 {
@@ -43,6 +44,8 @@ public:
 	// init background view 
 	void initView();
 	
+	// 
+	void moveToNextScene();
 
 private:
 

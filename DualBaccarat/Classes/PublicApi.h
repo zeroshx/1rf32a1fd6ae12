@@ -27,6 +27,18 @@ enum class Winner
 	TIE
 };
 
+enum class TIER
+{
+	UNRANKER,
+	BRONZE,
+	SILVER,
+	GOLD,
+	PLATINUM,
+	DIAMOND,
+	MASTER,
+	CHALLENGER
+};
+
 class PublicApi
 {
 public:   

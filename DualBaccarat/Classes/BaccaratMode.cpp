@@ -54,6 +54,7 @@ bool BaccaratMode::init()
 
 	auto menu = Menu::create(singlePlay, worldClass, exit, NULL);
 	menu->setPosition(Vec2::ZERO);
+	menu->setSwallowsTouches(false);
 	this->addChild(menu);
 
 	this->setScale(0);

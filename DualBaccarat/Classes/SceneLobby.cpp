@@ -42,6 +42,17 @@ void SceneLobby::onEnterTransitionDidFinish()
 	Node::onEnterTransitionDidFinish();
 	
 	addListener();
+
+	_letterBoard->run("Welcome to Dual Baccarat!");
+
+	_profile->setNickName("ZEROSHX");
+	_profile->setTier(TIER::DIAMOND);
+	_profile->setTopRankPoint("321,315,123");
+	_profile->setHighDividend("123,543,163");
+	_profile->setWinningStreak("12");
+	_profile->setChips("432,124,163");
+	_profile->setRankPoint("164,744,243");
+	_profile->setTicket("214");
 }
 void SceneLobby::onExit()
 {
@@ -95,88 +106,95 @@ void SceneLobby::initView()
 	auto bg = Sprite::create("grid.png");
 	bg->setPosition(_center);
 	this->addChild(bg);
-
-	auto gp = Sprabel::create("lobby/bg_cash.png", "123,321,321");
-	gp->setPosition(Vec2(1450, 1000));
-	this->addChild(gp);
-
-	auto rp = Sprabel::create("lobby/bg_cash.png", "123,321,321");
-	rp->setPosition(Vec2(900, 1000));
-	this->addChild(rp);
 	
-	auto ticket = Sprabel::create("lobby/bg_ticket.png", "121");
-	ticket->setPosition(Vec2(500, 1000));
-	this->addChild(ticket);
+	_profile = Profile::create();
+	this->addChild(_profile);
 
-	auto runItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(SceneLobby::menuCallback1, this));
-	runItem->setScale(2.0);
-	runItem->setPosition(Vec2(240, 120));
-
-	auto stopItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(SceneLobby::menuCallback2, this));
-	stopItem->setScale(2.0);
-	stopItem->setPosition(Vec2(360, 120));	
-
-	auto urlItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(SceneLobby::menuCallback3, this));
-	urlItem->setScale(2.0);
-	urlItem->setPosition(Vec2(480, 120));
-
-	auto settingItem = MenuItemImage::create(
-		"lobby/setting.png",
-		"lobby/setting.png",
-		CC_CALLBACK_1(SceneLobby::menuCallback4, this));
-	settingItem->setPosition(Vec2(1800, 1000));
-
-	auto baccaratItem = MenuItemImage::create(
-		"lobby/baccarat_normal.png",
-		"lobby/baccarat_selected.png",
-		CC_CALLBACK_1(SceneLobby::menuCallback5, this));
-	baccaratItem->setPosition(Vec2(600, 120));
-
-	// create menu, it's an autorelease object
-	_menu = Menu::create(runItem, stopItem, urlItem, settingItem, baccaratItem, NULL);
-	_menu->setPosition(Vec2::ZERO);
-	this->addChild(_menu, 1);
-
-	_letterBoard = LetterBoard::create();	
+	_letterBoard = LetterBoard::create();
 	this->addChild(_letterBoard);
 
 	_progressCircle = ProgressCircle::create();
 	this->addChild(_progressCircle);
+
+	auto notice = MenuItemImage::create("lobby/menu_notice_normal.png",
+		"lobby/menu_notice_selected.png",
+		CC_CALLBACK_1(SceneLobby::onNoticeSelected, this));
+	notice->setPosition(Vec2(120,800));
+
+	auto cafe = MenuItemImage::create("lobby/menu_cafe_normal.png",
+		"lobby/menu_cafe_selected.png",
+		CC_CALLBACK_1(SceneLobby::onCafeSelected, this));
+	cafe->setPosition(Vec2(120, 600));
+
+	auto ranking = MenuItemImage::create("lobby/menu_ranking_normal.png",
+		"lobby/menu_ranking_selected.png",
+		CC_CALLBACK_1(SceneLobby::onRankingSelected, this));
+	ranking->setPosition(Vec2(150, 180));
+
+	auto mission = MenuItemImage::create("lobby/menu_mission_normal.png",
+		"lobby/menu_mission_selected.png",
+		CC_CALLBACK_1(SceneLobby::onMissionSelected, this));
+	mission->setPosition(Vec2(370, 180));
+
+	auto tier = MenuItemImage::create("lobby/menu_tier_normal.png",
+		"lobby/menu_tier_selected.png",
+		CC_CALLBACK_1(SceneLobby::onTierSelected, this));
+	tier->setPosition(Vec2(590, 180));
+
+	auto store = MenuItemImage::create("lobby/menu_store_normal.png",
+		"lobby/menu_store_selected.png",
+		CC_CALLBACK_1(SceneLobby::onStoreSelected, this));
+	store->setPosition(Vec2(810, 180));
+
+	auto baccarat = MenuItemImage::create("lobby/menu_baccarat_normal.png",
+		"lobby/menu_baccarat_selected.png",
+		CC_CALLBACK_1(SceneLobby::onBaccaratSelected, this));
+	baccarat->setPosition(Vec2(550, 600));
+
+	auto roadmap = MenuItemImage::create("lobby/menu_roadmap_normal.png",
+		"lobby/menu_roadmap_selected.png",
+		CC_CALLBACK_1(SceneLobby::onRoadmapSelected, this));
+	roadmap->setPosition(Vec2(1000, 600));
+
+	auto configuration = MenuItemImage::create("lobby/menu_configuration_normal.png",
+		"lobby/menu_configuration_selected.png",
+		CC_CALLBACK_1(SceneLobby::onConfigurationSelected, this));
+	configuration->setPosition(Vec2(1800, 1000));
+
+	// create menu, it's an autorelease object
+	_menu = Menu::create(notice, cafe, ranking, mission, tier, store, 
+		baccarat, roadmap,
+		configuration, nullptr); 
+	_menu->setPosition(Vec2::ZERO);
+	_menu->setSwallowsTouches(false);
+	this->addChild(_menu, 1);
 }
 
-void SceneLobby::menuCallback1(Ref* pSender)
+void SceneLobby::onBaccaratSelected(Ref* pSender)
+{
+	CCLOG(__FUNCTION__);	
+	auto baccaratMode = BaccaratMode::create();
+	if (baccaratMode) {
+		baccaratMode->setDelegate(this);
+		baccaratMode->show();
+	}
+}
+void SceneLobby::onRoadmapSelected(Ref* pSender)
 {
 	CCLOG(__FUNCTION__);
-	_letterBoard->run("fdjalkfjalkfjlkajlfkajflksjalk");		
-	_progressCircle->run();
 	
 }
-void SceneLobby::menuCallback2(Ref* pSender)
+void SceneLobby::onNoticeSelected(Ref* pSender)
 {
 	CCLOG(__FUNCTION__);
-	_letterBoard->stop();	
-	_progressCircle->stop();
+	
 }
-void SceneLobby::menuCallback3(Ref* pSender)
+void SceneLobby::onCafeSelected(Ref* pSender)
 {
 	CCLOG(__FUNCTION__);
-
-	DialogBuilder db;
-	auto dialog = db.build(0);
-	dialog->show();
-
-	//Application::getInstance()->openURL("http://www.naver.com/");
+	Application::getInstance()->openURL("http://section.cafe.naver.com/");
 }
-void SceneLobby::menuCallback4(Ref* pSender)
+void SceneLobby::onRankingSelected(Ref* pSender)
 {
 	CCLOG(__FUNCTION__);
 	auto ranking = Ranking::create();
@@ -188,14 +206,25 @@ void SceneLobby::menuCallback4(Ref* pSender)
 		ranking->show();
 	}
 }
-void SceneLobby::menuCallback5(Ref* pSender)
+void SceneLobby::onMissionSelected(Ref* pSender)
 {
 	CCLOG(__FUNCTION__);
-	auto baccaratType = BaccaratMode::create();
-	if (baccaratType) {
-		baccaratType->setDelegate(this);
-		baccaratType->show();
-	}
+	
+}
+void SceneLobby::onTierSelected(Ref* pSender)
+{
+	CCLOG(__FUNCTION__);
+	
+}
+void SceneLobby::onStoreSelected(Ref* pSender)
+{
+	CCLOG(__FUNCTION__);
+	
+}
+void SceneLobby::onConfigurationSelected(Ref* pSender)
+{
+	CCLOG(__FUNCTION__);
+
 }
 
 void SceneLobby::loadResources()
@@ -240,12 +269,11 @@ void SceneLobby::onClickNegativeButton(Dialog* pDialog, int index)
 void SceneLobby::onSinglePlaySelected(BaccaratMode* pSender)
 {
 	CCLOG(__FUNCTION__);
-	auto scene = SceneIntro::createScene();
-	_director->replaceScene(scene);
+	
+
 }
 void SceneLobby::onWorldClassSelected(BaccaratMode* pSender)
 {
 	CCLOG(__FUNCTION__);
-	auto scene = SceneLogin::createScene();
-	_director->replaceScene(scene);
+	
 }

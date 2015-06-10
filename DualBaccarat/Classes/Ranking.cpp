@@ -44,6 +44,7 @@ bool Ranking::init()
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(exit, NULL);
 	menu->setPosition(Vec2::ZERO);
+	menu->setSwallowsTouches(false);
 	this->addChild(menu);
 
 	// Scroll view setting

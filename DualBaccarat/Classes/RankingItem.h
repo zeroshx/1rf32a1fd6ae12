@@ -6,15 +6,6 @@
 
 USING_NS_CC;
 
-enum class TIER
-{
-	BRONZE,
-	SILVER,
-	GOLD,
-	PLATINUM,
-	DIAMOND
-};
-
 class RankingItem : public Sprite
 {
 public:

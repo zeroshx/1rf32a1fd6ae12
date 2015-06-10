@@ -42,6 +42,22 @@ void SceneIntro::onEnterTransitionDidFinish()
 	Node::onEnterTransitionDidFinish();
 	
 	addListener();
+
+	auto label = Label::createWithTTF("DUAL BACCARAT", _font, 50);
+	label->setPosition(_center);
+	label->setHorizontalAlignment(TextHAlignment::CENTER);
+	label->setOpacity(0);
+	this->addChild(label);
+
+	auto act0 = FadeIn::create(1.5f);
+	auto act1 = CallFunc::create(CC_CALLBACK_0(SceneIntro::moveToNextScene, this));
+	auto act = Sequence::create(act0, act1, nullptr);
+	label->runAction(act);
+}
+void SceneIntro::moveToNextScene()
+{
+	auto scene = TransitionFade::create(1.0f, SceneLobby::createScene());
+	_director->replaceScene(scene);
 }
 void SceneIntro::onExit()
 {
@@ -92,9 +108,7 @@ void SceneIntro::removeListener()
 
 void SceneIntro::initView()
 {
-	auto label = Label::createWithTTF("THIS IS INTRO SCENE.", _font, 50);
-	label->setPosition(_center);
-	this->addChild(label);
+	
 }
 void SceneIntro::loadResources()
 {

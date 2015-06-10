@@ -1,18 +1,14 @@
 ﻿#include "AppDelegate.h"
-#include "PublicApi.h"
-#include "SceneBaccaratSinglePlay.h"
-#include "SceneLobby.h"
 
 USING_NS_CC;
 
 #define FRAME_WIDTH		1024
 #define FRAME_HEIGHT	576
 
-AppDelegate::AppDelegate() {
-
+AppDelegate::AppDelegate()
+{
 }
-
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
 }
 
@@ -60,8 +56,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-	auto scene = SceneBaccaratSinglePlay::createScene();
-	//auto scene = SceneLobby::createScene();
+	//auto scene = SceneBaccaratSinglePlay::createScene();
+	auto scene = SceneLobby::createScene();
 
     // run
     director->runWithScene(scene);

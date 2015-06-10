@@ -11,8 +11,8 @@
 #include "Sprabel.h"
 #include "Ranking.h"
 #include "BaccaratMode.h"
-#include "SceneIntro.h"
 #include "SceneLogin.h"
+#include "Profile.h"
 
 class SceneLobby : public cocos2d::Layer, public TextureLoadingDelegate, 
 	public DialogDelegate,
@@ -54,17 +54,22 @@ public:
 	// init background view 
 	void initView();
 	
-	void menuCallback1(Ref* pSender);
-	void menuCallback2(Ref* pSender);
-	void menuCallback3(Ref* pSender);
-	void menuCallback4(Ref* pSender);
-	void menuCallback5(Ref* pSender);
+	void onBaccaratSelected(Ref* pSender);
+	void onRoadmapSelected(Ref* pSender);
+	void onNoticeSelected(Ref* pSender);
+	void onCafeSelected(Ref* pSender);
+	void onRankingSelected(Ref* pSender);
+	void onMissionSelected(Ref* pSender);
+	void onTierSelected(Ref* pSender);
+	void onStoreSelected(Ref* pSender);
+	void onConfigurationSelected(Ref* pSender);
 
 private:
 
 	Menu *_menu;
 	ProgressCircle *_progressCircle;
 	LetterBoard *_letterBoard;
+	Profile *_profile;	
 };
 
 #endif // __SCENE_LOBBY_H__

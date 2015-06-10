@@ -35,18 +35,12 @@ bool Sprabel::init(const std::string spr, const std::string str)
 	}
 	Size sprSize = this->getContentSize();
 	Size labelSize = Size(sprSize.width - 50, sprSize.height);
-	
+
 	_label = Label::createWithTTF(str, _font, sprSize.height - 30, labelSize, TextHAlignment::RIGHT, TextVAlignment::CENTER);
-	if (_label) {
-		_label->setAnchorPoint(Point(0.5, 0.5));
-		_label->setPosition(labelSize.width / 2, labelSize.height / 2);
-		this->addChild(_label);
-	}
-	else {
-
-		return false;
-	}
-
+	_label->setAnchorPoint(Point(0.5, 0.5));
+	_label->setPosition(labelSize.width / 2, labelSize.height / 2);
+	this->addChild(_label);
+	
 	return true;
 }
 void Sprabel::setString(const std::string str)

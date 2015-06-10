@@ -77,7 +77,6 @@ bool BaccaratRecord::init()
 	_bg_boneFrame = Sprite::create("baccarat_record/bg_interior.png");
 	_bg_boneFrame->setPosition(_center);
 	_bg_boneFrame->setScale(0);
-	_bg_boneFrame->setOpacity(0);
 	this->addChild(_bg_boneFrame);
 
 	ui::ScrollView* scrollView = ui::ScrollView::create();
@@ -173,10 +172,8 @@ void BaccaratRecord::onFrameTriggered(Ref *pSender)
 void BaccaratRecord::show()
 {	
 	auto action_0 = EaseBackOut::create(ScaleTo::create(0.5, 1));
-	auto action_1 = FadeIn::create(0.5);
-	auto action_2 = Spawn::create(action_0, action_1, NULL);
-	auto action_3 = CallFunc::create(CC_CALLBACK_0(BaccaratRecord::onFrameAnimCompleted, this));
-	auto action = Sequence::create(action_2, action_3, NULL);
+	auto action_1 = CallFunc::create(CC_CALLBACK_0(BaccaratRecord::onFrameAnimCompleted, this));
+	auto action = Sequence::create(action_0, action_1, NULL);
 	_bg_boneFrame->runAction(action);	
 }
 void BaccaratRecord::onFrameAnimCompleted()
@@ -186,7 +183,6 @@ void BaccaratRecord::onFrameAnimCompleted()
 void BaccaratRecord::hide()
 {
 	_bg_boneFrame->setScale(0);
-	_bg_boneFrame->setOpacity(0);	
 }
 void BaccaratRecord::reset()
 {
