@@ -91,54 +91,54 @@ void Profile::setTier(TIER tier)
 		return;
 	}
 
-	Sprite *temp;
-
+	Texture2D *temp;
+	
 	switch (tier) {
 
 	case TIER::BRONZE :		
 		
-		temp = Sprite::create("tier/bronze.png");
+		temp = _textureCache->addImage("tier/bronze.png");
 		_tierName->setString("BRONZE");
 		break;
 
 	case TIER::SILVER :
 		
-		temp = Sprite::create("tier/silver.png");
+		temp = _textureCache->addImage("tier/silver.png");
 		_tierName->setString("SILVER");
 		break;
 
 	case TIER::GOLD :
 		
-		temp = Sprite::create("tier/gold.png");
+		temp = _textureCache->addImage("tier/gold.png");
 		_tierName->setString("GOLD");
 		break;
 
 	case TIER::PLATINUM :
 		
-		temp = Sprite::create("tier/platinum.png");
+		temp = _textureCache->addImage("tier/platinum.png");
 		_tierName->setString("PLATINUM");
 		break;
 
 	case TIER::DIAMOND :
 
-		temp = Sprite::create("tier/diamond.png");
+		temp = _textureCache->addImage("tier/diamond.png");
 		_tierName->setString("DIAMOND");
 		break;
 
 	case TIER::MASTER :
 
-		temp = Sprite::create("tier/master.png");
+		temp = _textureCache->addImage("tier/master.png");
 		_tierName->setString("MASTER");
 		break;
 
 	case TIER::CHALLENGER :
 
-		temp = Sprite::create("tier/challenger.png");
+		temp = _textureCache->addImage("tier/challenger.png");
 		_tierName->setString("CHALLENGER");
 		break;
 	}
 
-	_tier->setTexture(temp->getTexture());
+	_tier->setTexture(temp);
 }
 void Profile::setNickName(const std::string& nickName)
 {

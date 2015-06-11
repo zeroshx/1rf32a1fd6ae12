@@ -13,6 +13,7 @@
 #include "BaccaratMode.h"
 #include "SceneLogin.h"
 #include "Profile.h"
+#include "Store.h"
 
 class SceneLobby : public cocos2d::Layer, public TextureLoadingDelegate, 
 	public DialogDelegate,
@@ -54,15 +55,15 @@ public:
 	// init background view 
 	void initView();
 	
-	void onBaccaratSelected(Ref* pSender);
-	void onRoadmapSelected(Ref* pSender);
-	void onNoticeSelected(Ref* pSender);
-	void onCafeSelected(Ref* pSender);
-	void onRankingSelected(Ref* pSender);
-	void onMissionSelected(Ref* pSender);
-	void onTierSelected(Ref* pSender);
-	void onStoreSelected(Ref* pSender);
-	void onConfigurationSelected(Ref* pSender);
+	void onBaccaratSelected();
+	void onRoadmapSelected();
+	void onNoticeSelected();
+	void onCafeSelected();
+	void onRankingSelected();
+	void onMissionSelected();
+	void onTierSelected();
+	void onStoreSelected();
+	void onConfigurationSelected();
 
 private:
 

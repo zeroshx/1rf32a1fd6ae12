@@ -69,7 +69,7 @@ void BaccaratMode::show()
 	auto action_1 = FadeIn::create(0.5);
 	auto action = Spawn::create(action_0, action_1, NULL);
 	this->runAction(action);
-	_director->getRunningScene()->addChild(this);
+	_director->getRunningScene()->addChild(this, 2);
 }
 void BaccaratMode::destroy()
 {

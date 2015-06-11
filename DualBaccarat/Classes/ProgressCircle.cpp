@@ -22,7 +22,7 @@ bool ProgressCircle::init()
 	this->initWithFile("progress_circle/icon.png");	
 	this->setPosition(_center);
 	this->setVisible(false);
-	this->setGlobalZOrder(99999);
+	//this->setGlobalZOrder(99999);
 
 	_state = MODULE_STATE::IDLE;
 

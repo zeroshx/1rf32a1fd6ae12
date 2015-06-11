@@ -108,57 +108,57 @@ void SceneLobby::initView()
 	this->addChild(bg);
 	
 	_profile = Profile::create();
-	this->addChild(_profile);
+	this->addChild(_profile, 1);
 
 	_letterBoard = LetterBoard::create();
-	this->addChild(_letterBoard);
+	this->addChild(_letterBoard, 1);
 
 	_progressCircle = ProgressCircle::create();
-	this->addChild(_progressCircle);
+	this->addChild(_progressCircle, 10);
 
 	auto notice = MenuItemImage::create("lobby/menu_notice_normal.png",
 		"lobby/menu_notice_selected.png",
-		CC_CALLBACK_1(SceneLobby::onNoticeSelected, this));
+		CC_CALLBACK_0(SceneLobby::onNoticeSelected, this));
 	notice->setPosition(Vec2(120,800));
 
 	auto cafe = MenuItemImage::create("lobby/menu_cafe_normal.png",
 		"lobby/menu_cafe_selected.png",
-		CC_CALLBACK_1(SceneLobby::onCafeSelected, this));
+		CC_CALLBACK_0(SceneLobby::onCafeSelected, this));
 	cafe->setPosition(Vec2(120, 600));
 
 	auto ranking = MenuItemImage::create("lobby/menu_ranking_normal.png",
 		"lobby/menu_ranking_selected.png",
-		CC_CALLBACK_1(SceneLobby::onRankingSelected, this));
+		CC_CALLBACK_0(SceneLobby::onRankingSelected, this));
 	ranking->setPosition(Vec2(150, 180));
 
 	auto mission = MenuItemImage::create("lobby/menu_mission_normal.png",
 		"lobby/menu_mission_selected.png",
-		CC_CALLBACK_1(SceneLobby::onMissionSelected, this));
+		CC_CALLBACK_0(SceneLobby::onMissionSelected, this));
 	mission->setPosition(Vec2(370, 180));
 
 	auto tier = MenuItemImage::create("lobby/menu_tier_normal.png",
 		"lobby/menu_tier_selected.png",
-		CC_CALLBACK_1(SceneLobby::onTierSelected, this));
+		CC_CALLBACK_0(SceneLobby::onTierSelected, this));
 	tier->setPosition(Vec2(590, 180));
 
 	auto store = MenuItemImage::create("lobby/menu_store_normal.png",
 		"lobby/menu_store_selected.png",
-		CC_CALLBACK_1(SceneLobby::onStoreSelected, this));
+		CC_CALLBACK_0(SceneLobby::onStoreSelected, this));
 	store->setPosition(Vec2(810, 180));
 
 	auto baccarat = MenuItemImage::create("lobby/menu_baccarat_normal.png",
 		"lobby/menu_baccarat_selected.png",
-		CC_CALLBACK_1(SceneLobby::onBaccaratSelected, this));
+		CC_CALLBACK_0(SceneLobby::onBaccaratSelected, this));
 	baccarat->setPosition(Vec2(550, 600));
 
 	auto roadmap = MenuItemImage::create("lobby/menu_roadmap_normal.png",
 		"lobby/menu_roadmap_selected.png",
-		CC_CALLBACK_1(SceneLobby::onRoadmapSelected, this));
+		CC_CALLBACK_0(SceneLobby::onRoadmapSelected, this));
 	roadmap->setPosition(Vec2(1000, 600));
 
 	auto configuration = MenuItemImage::create("lobby/menu_configuration_normal.png",
 		"lobby/menu_configuration_selected.png",
-		CC_CALLBACK_1(SceneLobby::onConfigurationSelected, this));
+		CC_CALLBACK_0(SceneLobby::onConfigurationSelected, this));
 	configuration->setPosition(Vec2(1800, 1000));
 
 	// create menu, it's an autorelease object
@@ -170,7 +170,7 @@ void SceneLobby::initView()
 	this->addChild(_menu, 1);
 }
 
-void SceneLobby::onBaccaratSelected(Ref* pSender)
+void SceneLobby::onBaccaratSelected()
 {
 	CCLOG(__FUNCTION__);	
 	auto baccaratMode = BaccaratMode::create();
@@ -179,22 +179,22 @@ void SceneLobby::onBaccaratSelected(Ref* pSender)
 		baccaratMode->show();
 	}
 }
-void SceneLobby::onRoadmapSelected(Ref* pSender)
+void SceneLobby::onRoadmapSelected()
 {
 	CCLOG(__FUNCTION__);
 	
 }
-void SceneLobby::onNoticeSelected(Ref* pSender)
+void SceneLobby::onNoticeSelected()
 {
 	CCLOG(__FUNCTION__);
-	
+	_progressCircle->run();
 }
-void SceneLobby::onCafeSelected(Ref* pSender)
+void SceneLobby::onCafeSelected()
 {
 	CCLOG(__FUNCTION__);
 	Application::getInstance()->openURL("http://section.cafe.naver.com/");
 }
-void SceneLobby::onRankingSelected(Ref* pSender)
+void SceneLobby::onRankingSelected()
 {
 	CCLOG(__FUNCTION__);
 	auto ranking = Ranking::create();
@@ -206,22 +206,23 @@ void SceneLobby::onRankingSelected(Ref* pSender)
 		ranking->show();
 	}
 }
-void SceneLobby::onMissionSelected(Ref* pSender)
+void SceneLobby::onMissionSelected()
 {
 	CCLOG(__FUNCTION__);
 	
 }
-void SceneLobby::onTierSelected(Ref* pSender)
+void SceneLobby::onTierSelected()
 {
 	CCLOG(__FUNCTION__);
 	
 }
-void SceneLobby::onStoreSelected(Ref* pSender)
+void SceneLobby::onStoreSelected()
 {
 	CCLOG(__FUNCTION__);
-	
+	auto store = Store::create();
+	this->addChild(store, 2);
 }
-void SceneLobby::onConfigurationSelected(Ref* pSender)
+void SceneLobby::onConfigurationSelected()
 {
 	CCLOG(__FUNCTION__);
 
