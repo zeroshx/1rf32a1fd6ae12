@@ -54,11 +54,10 @@ void LetterBoard::run()
 
 		_state = MODULE_STATE::START;
 
-		auto length = _label->getStringLength();
-		auto dest = (length * LETTER_SIZE) + LETTERBOARD_WIDTH;
-		auto time = (dest / 1000) * LETTER_SPEED;
+		auto length = _label->getContentSize().width + LETTERBOARD_WIDTH;
+		auto time = (length / 1000) * LETTER_SPEED;
 
-		auto act0 = MoveBy::create(time, Vec2(-dest, 0));
+		auto act0 = MoveBy::create(time, Vec2(-length, 0));
 		auto act1 = CallFunc::create(CC_CALLBACK_0(LetterBoard::onMoveEnded, this));
 		auto seq = Sequence::create(act0, act1, NULL);
 		auto repeat = RepeatForever::create(seq);

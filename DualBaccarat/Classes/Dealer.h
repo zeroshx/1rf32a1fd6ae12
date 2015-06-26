@@ -1,7 +1,6 @@
 ﻿#ifndef __DEALER_H__
 #define __DEALER_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "PokerCard.h"
 
@@ -20,23 +19,30 @@ public:
 	static Dealer* create();
 	virtual bool init();
 
+	void reset();
 	void shuffleAnimation();
-	void gameoverAnimation(Winner winner);
+	void gameoverAnimation(WINNER winner);
 	void bettingTimerAnimation(int time);
-	void cardDealingAnimation(std::vector<PokerCard> cardset);
-	
+	void cardDealingAnimation(std::vector<PokerCard> cardset);	
 
 private :	// private member func
 
 	void dealingController(float unused);
 	void dealing(float unused);
+	void changeDealingOrder(float unused);
 	void onDealingAnimationEeded();
-	void onGameoverAnimationEnded(Ref *target);
+	void onMiddleDealingAnimation(PokerCard card);
+	void onGameoverAnimationEnded(Ref* target);
 	std::string getImageName(PokerCard *p);
 
 private :	// private member vars.
 
 	Label *_timer;
+	Label *_score_player;
+	Label *_score_banker;
+
+	int _player_sum;
+	int _banker_sum;
 	
 	Layer *_dealingLayer;
 

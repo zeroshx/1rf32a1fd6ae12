@@ -22,7 +22,7 @@ bool ProgressCircle::init()
 	this->initWithFile("progress_circle/icon.png");	
 	this->setPosition(_center);
 	this->setVisible(false);
-	//this->setGlobalZOrder(99999);
+	this->setGlobalZOrder(99999);
 
 	_state = MODULE_STATE::IDLE;
 
@@ -33,6 +33,7 @@ void ProgressCircle::run()
 	if (_state == MODULE_STATE::IDLE) {
 
 		_state = MODULE_STATE::START;
+		_moduleDelegate->onModuleBegan();
 		
 		auto act0 = RotateBy::create(0.2f, 40.0f);
 		auto act1 = RepeatForever::create(act0);
@@ -50,5 +51,10 @@ void ProgressCircle::stop()
 		this->stopAllActions();
 
 		_state = MODULE_STATE::IDLE;
+		_moduleDelegate->onModuleEnded();
 	}
+}
+void ProgressCircle::setDelegate(ModuleDelegate* md)
+{
+	_moduleDelegate = md;
 }

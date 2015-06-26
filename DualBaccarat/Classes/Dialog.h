@@ -1,7 +1,6 @@
 ﻿#ifndef __DIALOG_H__
 #define __DIALOG_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "DialogDelegate.h"
 

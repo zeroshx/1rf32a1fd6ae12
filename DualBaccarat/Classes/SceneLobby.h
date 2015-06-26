@@ -1,7 +1,6 @@
 ﻿#ifndef __SCENE_LOBBY_H__
 #define __SCENE_LOBBY_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "AppUser.h"
 #include "DialogBuilder.h"
@@ -14,10 +13,14 @@
 #include "SceneLogin.h"
 #include "Profile.h"
 #include "Store.h"
+#include "MissionManager.h"
+#include "NoticeBoard.h"
 
-class SceneLobby : public cocos2d::Layer, public TextureLoadingDelegate, 
+class SceneLobby : public cocos2d::Layer, public TextureLoadingDelegate,
 	public DialogDelegate,
-	public BaccaratModeDelegate
+	public BaccaratModeDelegate,
+	public ModuleDelegate,
+	public StoreDelegate
 {
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -44,6 +47,13 @@ public:
 
 	virtual void onSinglePlaySelected(BaccaratMode* pSender);
 	virtual void onWorldClassSelected(BaccaratMode* pSender);
+
+	virtual void onModuleInit();
+	virtual void onModuleBegan();
+	virtual void onModuleWorking();
+	virtual void onModuleEnded();
+
+	virtual void onItembought(const std::string& itemCode);
 
 	// listener
 	void addListener();

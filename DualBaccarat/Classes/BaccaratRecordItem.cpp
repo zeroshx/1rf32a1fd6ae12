@@ -17,23 +17,23 @@ void BaccaratRecordItem::reset()
 	_column = 0;
 	_columnCount = 0;
 	_number = 0;
-	_continuation = Continuation::NONE;
-	_winner = Winner::NONE;
-	_pair = Pair::NONE;
+	_continuation = CONTINUATION::NONE;
+	_winner = WINNER::NONE;
+	_pair = PAIR::NONE;
 	_root = nullptr;
 }
-Winner BaccaratRecordItem::reverseWinner()
+WINNER BaccaratRecordItem::reverseWinner()
 {
-	if (_winner == Winner::BANKER) {
+	if (_winner == WINNER::BANKER) {
 
-		return Winner::PLAYER;
+		return WINNER::PLAYER;
 	}
-	else if (_winner == Winner::PLAYER) {
+	else if (_winner == WINNER::PLAYER) {
 
-		return Winner::BANKER;
+		return WINNER::BANKER;
 	}
 	else {
 
-		return Winner::NONE;
+		return WINNER::NONE;
 	}
 }

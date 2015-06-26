@@ -35,43 +35,43 @@ bool BaccaratRecord::init()
 
 	_bg_scoreBoard = Sprite::create("baccarat_record/bg_scoreboard.png");
 	_bg_scoreBoard->setAnchorPoint(Point(0, 0));
-	_bg_scoreBoard->setPosition(Vec2(40, 500));
-	this->addChild(_bg_scoreBoard);
-
-	_scoreType[SCORE_TYPE::BANKER] = ScoreboardItem::create("baccarat_record/banker.png",
-		"baccarat_record/name_banker.png");
-	_scoreType[SCORE_TYPE::BANKER]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::BANKER]->setPosition(Vec2(20, 370));
-	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::BANKER]);
+	_bg_scoreBoard->setPosition(Vec2(20, 500));
+	this->addChild(_bg_scoreBoard);	
 
 	_scoreType[SCORE_TYPE::PLAYER] = ScoreboardItem::create("baccarat_record/player.png",
 		"baccarat_record/name_player.png");
 	_scoreType[SCORE_TYPE::PLAYER]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::PLAYER]->setPosition(Vec2(20, 300));
+	_scoreType[SCORE_TYPE::PLAYER]->setPosition(Vec2(20, 180));
 	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::PLAYER]);
-
-	_scoreType[SCORE_TYPE::TIE] = ScoreboardItem::create("baccarat_record/tie.png",
-		"baccarat_record/name_tie.png");
-	_scoreType[SCORE_TYPE::TIE]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::TIE]->setPosition(Vec2(20, 230));
-	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::TIE]);
-
-	_scoreType[SCORE_TYPE::BANKER_PAIR] = ScoreboardItem::create("baccarat_record/pair_b.png",
-		"baccarat_record/name_banker_pair.png");
-	_scoreType[SCORE_TYPE::BANKER_PAIR]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::BANKER_PAIR]->setPosition(Vec2(20, 160));
-	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::BANKER_PAIR]);
 
 	_scoreType[SCORE_TYPE::PLAYER_PAIR] = ScoreboardItem::create("baccarat_record/pair_p.png",
 		"baccarat_record/name_player_pair.png");
 	_scoreType[SCORE_TYPE::PLAYER_PAIR]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::PLAYER_PAIR]->setPosition(Vec2(20, 90));
+	_scoreType[SCORE_TYPE::PLAYER_PAIR]->setPosition(Vec2(170, 180));
 	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::PLAYER_PAIR]);
+	
+	_scoreType[SCORE_TYPE::BANKER] = ScoreboardItem::create("baccarat_record/banker.png",
+		"baccarat_record/name_banker.png");
+	_scoreType[SCORE_TYPE::BANKER]->setAnchorPoint(Point(0, 0));
+	_scoreType[SCORE_TYPE::BANKER]->setPosition(Vec2(20, 100));
+	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::BANKER]);
+
+	_scoreType[SCORE_TYPE::BANKER_PAIR] = ScoreboardItem::create("baccarat_record/pair_b.png",
+		"baccarat_record/name_banker_pair.png");
+	_scoreType[SCORE_TYPE::BANKER_PAIR]->setAnchorPoint(Point(0, 0));
+	_scoreType[SCORE_TYPE::BANKER_PAIR]->setPosition(Vec2(170, 100));
+	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::BANKER_PAIR]);
+
+	_scoreType[SCORE_TYPE::TIE] = ScoreboardItem::create("baccarat_record/tie.png",
+		"baccarat_record/name_tie.png");
+	_scoreType[SCORE_TYPE::TIE]->setAnchorPoint(Point(0, 0));
+	_scoreType[SCORE_TYPE::TIE]->setPosition(Vec2(20, 20));
+	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::TIE]);
 
 	_scoreType[SCORE_TYPE::TOTAL] = ScoreboardItem::create("baccarat_record/icon_totalscore.png",
 		"baccarat_record/name_totalscore.png");
 	_scoreType[SCORE_TYPE::TOTAL]->setAnchorPoint(Point(0, 0));
-	_scoreType[SCORE_TYPE::TOTAL]->setPosition(Vec2(20, 20));
+	_scoreType[SCORE_TYPE::TOTAL]->setPosition(Vec2(170, 20));
 	_bg_scoreBoard->addChild(_scoreType[SCORE_TYPE::TOTAL]);
 
 	_bg_boneFrame = Sprite::create("baccarat_record/bg_interior.png");
@@ -153,6 +153,7 @@ bool BaccaratRecord::init()
 	this->addChild(_menu, 1);
 	
 	_state = MODULE_STATE::IDLE;
+	_delegate = nullptr;
 	reset();
     return true;
 }
@@ -183,6 +184,10 @@ void BaccaratRecord::onFrameAnimCompleted()
 void BaccaratRecord::hide()
 {
 	_bg_boneFrame->setScale(0);
+}
+void BaccaratRecord::setDelegate(BaccaratRecordDelegate *brd)
+{
+	_delegate = brd;
 }
 void BaccaratRecord::reset()
 {
@@ -227,7 +232,7 @@ void BaccaratRecord::reset()
 	_bg_divination[1]->removeAllChildren();
 	_bg_divination[2]->removeAllChildren();
 	_bg_nextRecord->removeAllChildren();
-	_bg_recommend->removeAllChildren();
+	_bg_recommend->removeAllChildren();	
 
 	_scoreType[SCORE_TYPE::BANKER]->setScore("0");
 	_scoreType[SCORE_TYPE::PLAYER]->setScore("0");
@@ -236,7 +241,7 @@ void BaccaratRecord::reset()
 	_scoreType[SCORE_TYPE::PLAYER_PAIR]->setScore("0");
 	_scoreType[SCORE_TYPE::TOTAL]->setScore("0");
 }
-void BaccaratRecord::push(Winner winner, Pair pair)
+void BaccaratRecord::push(WINNER winner, PAIR pair)
 {
 	// 1. make record 1D chart
 	chartPrototype(winner, pair);
@@ -274,9 +279,9 @@ void BaccaratRecord::drawLatestRecord()
 
 	drawRecommendedItem();
 }
-void BaccaratRecord::chartPrototype(Winner winner, Pair pair)
+void BaccaratRecord::chartPrototype(WINNER winner, PAIR pair)
 {
-	if (winner == Winner::NONE) {
+	if (winner == WINNER::NONE) {
 
 		return;
 	}
@@ -312,9 +317,9 @@ void BaccaratRecord::chartPrototype(Winner winner, Pair pair)
 	_lastPrototype->_winner = winner;
 	_lastPrototype->_pair = pair;
 }
-void BaccaratRecord::chartBase(Winner winner, Pair pair)
+void BaccaratRecord::chartBase(WINNER winner, PAIR pair)
 {
-	if (winner == Winner::TIE || winner == Winner::NONE) {
+	if (winner == WINNER::TIE || winner == WINNER::NONE) {
 
 		return;
 	}
@@ -410,6 +415,9 @@ void BaccaratRecord::chartBase(Winner winner, Pair pair)
 			else {
 
 				isFailed = true;
+				if (_delegate) {
+					_delegate->onFullRecordBoard();
+				}
 			}
 		}
 	}
@@ -434,7 +442,7 @@ void BaccaratRecord::chartDivination(DIV_DEPTH depth)
 	}
 
 	bool isFailed = false;
-	Continuation continuation;
+	CONTINUATION continuation;
 	BaccaratRecordItem* previousItem;
 
 	// 1. find previous item
@@ -452,11 +460,11 @@ void BaccaratRecord::chartDivination(DIV_DEPTH depth)
 	// 2. select solution
 	if (_lastBase->_winner == findNextConsecutiveItem(previousItem, depth)) {
 
-		continuation = Continuation::KEEP;
+		continuation = CONTINUATION::KEEP;
 	}
 	else {
 
-		continuation = Continuation::INVERSE;
+		continuation = CONTINUATION::INVERSE;
 	}
 
 	// 3. add to chart
@@ -528,6 +536,9 @@ void BaccaratRecord::chartDivination(DIV_DEPTH depth)
 			else {
 
 				isFailed = true;
+				if (_delegate) {
+					_delegate->onFullRecordBoard();
+				}
 			}
 		}
 	}
@@ -538,7 +549,7 @@ void BaccaratRecord::chartDivination(DIV_DEPTH depth)
 		_lastDivination[depth - 1]->_isUsed = true;
 	}
 }
-Winner BaccaratRecord::findNextConsecutiveItem(BaccaratRecordItem* lastItem, DIV_DEPTH depth)
+WINNER BaccaratRecord::findNextConsecutiveItem(BaccaratRecordItem* lastItem, DIV_DEPTH depth)
 {
 	for (int i = 0; i < BASE_WIDTH_LENGTH; i++)
 	{
@@ -555,57 +566,68 @@ Winner BaccaratRecord::findNextConsecutiveItem(BaccaratRecordItem* lastItem, DIV
 		}		
 	}
 
-	return Winner::NONE;
+	return WINNER::NONE;
 }
-Winner BaccaratRecord::findNextConsecutiveItem(DIV_DEPTH depth)
+WINNER BaccaratRecord::findNextConsecutiveItem(DIV_DEPTH depth)
 {
 	return findNextConsecutiveItem(_lastBase, depth);
 }
-void BaccaratRecord::chartNextRecord(Winner winner)
+void BaccaratRecord::chartNextRecord(WINNER winner)
 {
-	Winner w[3];
+	WINNER w[3];
 
-	if (_lastBase->_number >= _base[1][0]._number) {
+	if (_lastBase) {
 
-		w[0] = findNextConsecutiveItem(DIV_DEPTH::FIRST);
+		if (_lastBase->_number >= _base[1][0]._number) {
+
+			w[0] = findNextConsecutiveItem(DIV_DEPTH::FIRST);
+		}
+		else {
+
+			w[0] = WINNER::NONE;
+		}
+
+		if (_lastBase->_number >= _base[2][0]._number) {
+
+			w[1] = findNextConsecutiveItem(DIV_DEPTH::SECOND);
+		}
+		else {
+
+			w[1] = WINNER::NONE;
+		}
+
+		if (_lastBase->_number >= _base[3][0]._number) {
+
+			w[2] = findNextConsecutiveItem(DIV_DEPTH::THIRD);
+		}
+		else {
+
+			w[2] = WINNER::NONE;
+		}
 	}
 	else {
 
-		w[0] = Winner::NONE;
-	}
-	if (_lastBase->_number >= _base[2][0]._number) {
-
-		w[1] = findNextConsecutiveItem(DIV_DEPTH::SECOND);
-	}
-	else {
-
-		w[1] = Winner::NONE;
-	}
-	if (_lastBase->_number >= _base[3][0]._number) {
-
-		w[2] = findNextConsecutiveItem(DIV_DEPTH::THIRD);
-	}
-	else {
-
-		w[2] = Winner::NONE;
+		w[0] = WINNER::NONE;
+		w[1] = WINNER::NONE;
+		w[2] = WINNER::NONE;
 	}
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (w[i] == Winner::PLAYER) {
+		if (w[i] == WINNER::PLAYER) {
 					
-			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = Continuation::INVERSE;
-			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = Continuation::KEEP;
+			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = CONTINUATION::INVERSE;
+			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = CONTINUATION::KEEP;
 		}
-		else if (w[i] == Winner::BANKER) {
+		else if (w[i] == WINNER::BANKER) {
 
-			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = Continuation::KEEP;
-			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = Continuation::INVERSE;
+			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = CONTINUATION::KEEP;
+			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = CONTINUATION::INVERSE;
 		}
 		else {
 
-			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = Continuation::NONE;
-			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = Continuation::NONE;
+			_nextRecord[SCORE_TYPE::BANKER][i]._continuation = CONTINUATION::NONE;
+			_nextRecord[SCORE_TYPE::PLAYER][i]._continuation = CONTINUATION::NONE;
 		}
 	}
 }
@@ -615,11 +637,11 @@ void BaccaratRecord::findRecommendedItem()
 
 	for (int j = 0; j < 3; j++)
 	{
-		if (_nextRecord[SCORE_TYPE::BANKER][j]._continuation == Continuation::KEEP) {
+		if (_nextRecord[SCORE_TYPE::BANKER][j]._continuation == CONTINUATION::KEEP) {
 
 			banker++;
 		}
-		else if (_nextRecord[SCORE_TYPE::PLAYER][j]._continuation == Continuation::KEEP) {
+		else if (_nextRecord[SCORE_TYPE::PLAYER][j]._continuation == CONTINUATION::KEEP) {
 
 			player++;
 		}
@@ -627,28 +649,28 @@ void BaccaratRecord::findRecommendedItem()
 
 	if (player > banker) {
 
-		_recommend._winner = Winner::PLAYER;
+		_recommend._winner = WINNER::PLAYER;
 	}
 	else {
 
-		_recommend._winner = Winner::BANKER;
+		_recommend._winner = WINNER::BANKER;
 	}
 }
-void BaccaratRecord::updateScoreboard(Winner winner, Pair pair)
+void BaccaratRecord::updateScoreboard(WINNER winner, PAIR pair)
 {
 	switch (winner)
 	{
-	case Winner::BANKER :
+	case WINNER::BANKER :
 
 		_scoreboard[SCORE_TYPE::BANKER]++;
 		break;
 
-	case Winner::PLAYER :
+	case WINNER::PLAYER :
 
 		_scoreboard[SCORE_TYPE::PLAYER]++;
 		break;
 
-	case Winner::TIE :
+	case WINNER::TIE :
 
 		_scoreboard[SCORE_TYPE::TIE]++;
 		break;
@@ -656,16 +678,20 @@ void BaccaratRecord::updateScoreboard(Winner winner, Pair pair)
 
 	switch (pair)
 	{
-	case Pair::BANKER:
+	case PAIR::BANKER:
 
 		_scoreboard[SCORE_TYPE::BANKER_PAIR]++;
 		break;
 
-	case Pair::PLAYER:
+	case PAIR::PLAYER:
 
 		_scoreboard[SCORE_TYPE::PLAYER_PAIR]++;
 		break;
 
+	case PAIR::BOTH:
+		_scoreboard[SCORE_TYPE::BANKER_PAIR]++;
+		_scoreboard[SCORE_TYPE::PLAYER_PAIR]++;
+		break;
 	}
 
 	_scoreboard[SCORE_TYPE::TOTAL]++;
@@ -686,7 +712,7 @@ void BaccaratRecord::drawPrototype()
 	{
 		if (_prototype[i]._isUsed) {
 
-			auto spr = Sprite::create(getImageName(RecordType::PROTOTYPE,
+			auto spr = Sprite::create(getImageName(RECORD_TYPE::PROTOTYPE,
 				_prototype[i]._winner, _prototype[i]._pair, _prototype[i]._continuation));
 			spr->setAnchorPoint(Point(0, 0));
 			spr->setPosition(i * interval, height);
@@ -704,7 +730,7 @@ void BaccaratRecord::drawLatestPrototype()
 		return;
 	}
 
-	auto spr = Sprite::create(getImageName(RecordType::PROTOTYPE,
+	auto spr = Sprite::create(getImageName(RECORD_TYPE::PROTOTYPE,
 		_lastPrototype->_winner, _lastPrototype->_pair, _lastPrototype->_continuation));
 	spr->setAnchorPoint(Point(0, 0.5));	
 	spr->setTag(_lastPrototype->_number);
@@ -750,7 +776,7 @@ void BaccaratRecord::drawBase()
 		{
 			if (_base[i][j]._isUsed) {
 
-				auto spr = Sprite::create(getImageName(RecordType::BASE, _base[i][j]._winner, Pair::NONE, Continuation::NONE));
+				auto spr = Sprite::create(getImageName(RECORD_TYPE::BASE, _base[i][j]._winner, PAIR::NONE, CONTINUATION::NONE));
 				spr->setAnchorPoint(Point(0, 1));
 				spr->setPosition(i * interval, height - j * interval);
 				_bg_base->addChild(spr);
@@ -769,7 +795,7 @@ void BaccaratRecord::drawLatestBase()
 		return;
 	}
 
-	auto spr = Sprite::create(getImageName(RecordType::BASE, _lastBase->_winner, Pair::NONE, Continuation::NONE));
+	auto spr = Sprite::create(getImageName(RECORD_TYPE::BASE, _lastBase->_winner, PAIR::NONE, CONTINUATION::NONE));
 	spr->setAnchorPoint(Point(0, 1));
 	spr->setPosition(_lastBase->_x * interval, height - _lastBase->_y * interval);
 	spr->setOpacity(0);
@@ -791,7 +817,7 @@ void BaccaratRecord::drawDivination(int depth)
 		{
 			if (_divination[depth - 1][i][j]._isUsed) {
 
-				auto spr = Sprite::create(getImageName(RecordType::DIVINATION1TH, Winner::NONE, Pair::NONE, _divination[depth - 1][i][j]._continuation));
+				auto spr = Sprite::create(getImageName(RECORD_TYPE::DIVINATION1TH, WINNER::NONE, PAIR::NONE, _divination[depth - 1][i][j]._continuation));
 				spr->setAnchorPoint(Point(0, 1));
 				spr->setPosition(i * interval, height - j * interval);
 				_bg_divination[depth - 1]->addChild(spr);
@@ -809,19 +835,19 @@ void BaccaratRecord::drawLatestDivination(int depth)
 
 	float height = _bg_divination[depth - 1]->getContentSize().height;
 	float interval = height / BASE_HEIGHT_LENGTH;
-	RecordType type;
+	RECORD_TYPE type;
 
 	if (depth == DIV_DEPTH::FIRST) {
-		type = RecordType::DIVINATION1TH;
+		type = RECORD_TYPE::DIVINATION1TH;
 	}
 	else if (depth == DIV_DEPTH::SECOND) {
-		type = RecordType::DIVINATION2ND;
+		type = RECORD_TYPE::DIVINATION2ND;
 	}
 	else {
-		type = RecordType::DIVINATION3RD;
+		type = RECORD_TYPE::DIVINATION3RD;
 	}
 	
-	auto spr = Sprite::create(getImageName(type, Winner::NONE, Pair::NONE, _lastDivination[depth - 1]->_continuation));
+	auto spr = Sprite::create(getImageName(type, WINNER::NONE, PAIR::NONE, _lastDivination[depth - 1]->_continuation));
 	spr->setAnchorPoint(Point(0, 1));
 	spr->setPosition(_lastDivination[depth - 1]->_x * interval, height - _lastDivination[depth - 1]->_y * interval);
 	spr->setOpacity(0);
@@ -834,95 +860,99 @@ void BaccaratRecord::drawLatestDivination(int depth)
 }
 void BaccaratRecord::drawNextRecord()
 {
+	_bg_nextRecord->removeAllChildren();
+
 	// div 1
-	if (_nextRecord[0][0]._continuation != Continuation::NONE) {
+	if (_nextRecord[0][0]._continuation != CONTINUATION::NONE) {
 			
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV1TH, Winner::NONE, Pair::NONE, _nextRecord[0][0]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV1TH, WINNER::NONE, PAIR::NONE, _nextRecord[0][0]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(30, 170));
 		_bg_nextRecord->addChild(spr);
 	}
-	if (_nextRecord[1][0]._continuation != Continuation::NONE) {
+	if (_nextRecord[1][0]._continuation != CONTINUATION::NONE) {
 
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV1TH, Winner::NONE, Pair::NONE, _nextRecord[1][0]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV1TH, WINNER::NONE, PAIR::NONE, _nextRecord[1][0]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(110, 170));
 		_bg_nextRecord->addChild(spr);
 	}
 
 	// div 2
-	if (_nextRecord[0][1]._continuation != Continuation::NONE) {
+	if (_nextRecord[0][1]._continuation != CONTINUATION::NONE) {
 
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV2ND, Winner::NONE, Pair::NONE, _nextRecord[0][1]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV2ND, WINNER::NONE, PAIR::NONE, _nextRecord[0][1]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(30, 100));
 		_bg_nextRecord->addChild(spr);
 	}
-	if (_nextRecord[1][1]._continuation != Continuation::NONE) {
+	if (_nextRecord[1][1]._continuation != CONTINUATION::NONE) {
 
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV2ND, Winner::NONE, Pair::NONE, _nextRecord[1][1]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV2ND, WINNER::NONE, PAIR::NONE, _nextRecord[1][1]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(110, 100));
 		_bg_nextRecord->addChild(spr);
 	}
 
 	// div 3
-	if (_nextRecord[0][2]._continuation != Continuation::NONE) {
+	if (_nextRecord[0][2]._continuation != CONTINUATION::NONE) {
 
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV3RD, Winner::NONE, Pair::NONE, _nextRecord[0][2]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV3RD, WINNER::NONE, PAIR::NONE, _nextRecord[0][2]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(30, 40));
 		_bg_nextRecord->addChild(spr);
 	}
-	if (_nextRecord[1][2]._continuation != Continuation::NONE) {
+	if (_nextRecord[1][2]._continuation != CONTINUATION::NONE) {
 
-		auto spr = Sprite::create(getImageName(RecordType::NEXT_DIV3RD, Winner::NONE, Pair::NONE, _nextRecord[1][2]._continuation));
+		auto spr = Sprite::create(getImageName(RECORD_TYPE::NEXT_DIV3RD, WINNER::NONE, PAIR::NONE, _nextRecord[1][2]._continuation));
 		spr->setAnchorPoint(Point(0, 0));
 		spr->setPosition(Vec2(110, 40));
 		_bg_nextRecord->addChild(spr);
-	}		
+	}
 }
 void BaccaratRecord::drawRecommendedItem()
 {
 	Sprite* spr;
 
-	if (_recommend._winner == Winner::PLAYER) {
+	_bg_recommend->removeAllChildren();
 
-		spr = Sprite::create(getImageName(RecordType::BASE, Winner::PLAYER, Pair::NONE, Continuation::NONE));
+	if (_recommend._winner == WINNER::PLAYER) {
+
+		spr = Sprite::create(getImageName(RECORD_TYPE::BASE, WINNER::PLAYER, PAIR::NONE, CONTINUATION::NONE));
 	}
 	else {
 
-		spr = Sprite::create(getImageName(RecordType::BASE, Winner::BANKER, Pair::NONE, Continuation::NONE));
+		spr = Sprite::create(getImageName(RECORD_TYPE::BASE, WINNER::BANKER, PAIR::NONE, CONTINUATION::NONE));
 	}
 
 	spr->setAnchorPoint(Point(0.5, 0.5));
 	spr->setPosition(Vec2(100, 70));
 	_bg_recommend->addChild(spr);
 }
-const std::string BaccaratRecord::getImageName(RecordType type, Winner winner, Pair pair, Continuation continuity)
+const std::string BaccaratRecord::getImageName(RECORD_TYPE type, WINNER winner, PAIR pair, CONTINUATION continuity)
 {
 	std::string name = "baccarat_record/";
 
-	if (type == RecordType::NEXT_DIV1TH || type == RecordType::NEXT_DIV2ND || type == RecordType::NEXT_DIV3RD) {
+	if (type == RECORD_TYPE::NEXT_DIV1TH || type == RECORD_TYPE::NEXT_DIV2ND || type == RECORD_TYPE::NEXT_DIV3RD) {
 
 		name += "next_";
 	}
 
-	if (type == RecordType::PROTOTYPE) {
+	if (type == RECORD_TYPE::PROTOTYPE) {
 
 		name += getStringForWinner(winner);
 		name += getStringForPair(pair);
 	}
-	else if (type == RecordType::BASE) {
+	else if (type == RECORD_TYPE::BASE) {
 
 		name += getStringForWinner(winner);
 	}
-	else if (type == RecordType::DIVINATION1TH || type == RecordType::NEXT_DIV1TH) {
+	else if (type == RECORD_TYPE::DIVINATION1TH || type == RECORD_TYPE::NEXT_DIV1TH) {
 
 		name += "div1";
 		name += getStringForContinuity(continuity);
 	}
-	else if (type == RecordType::DIVINATION2ND || type == RecordType::NEXT_DIV2ND) {
+	else if (type == RECORD_TYPE::DIVINATION2ND || type == RECORD_TYPE::NEXT_DIV2ND) {
 
 		name += "div2";
 		name += getStringForContinuity(continuity);
@@ -935,47 +965,47 @@ const std::string BaccaratRecord::getImageName(RecordType type, Winner winner, P
 
 	return name + ".png";
 }
-const std::string BaccaratRecord::getStringForWinner(Winner winner)
+const std::string BaccaratRecord::getStringForWinner(WINNER winner)
 {
-	if (winner == Winner::PLAYER) {
+	if (winner == WINNER::PLAYER) {
 
 		return "player";
 	}
-	else if (winner == Winner::BANKER) {
+	else if (winner == WINNER::BANKER) {
 
 		return "banker";
 	}
-	else if (winner == Winner::TIE) {
+	else if (winner == WINNER::TIE) {
 
 		return "tie";
 	}
 
 	return "";
 }
-const std::string BaccaratRecord::getStringForPair(Pair pair)
+const std::string BaccaratRecord::getStringForPair(PAIR pair)
 {
-	if (pair == Pair::PLAYER) {
+	if (pair == PAIR::PLAYER) {
 
 		return "_p";
 	}
-	else if (pair == Pair::BANKER) {
+	else if (pair == PAIR::BANKER) {
 
 		return "_b";
 	}
-	else if (pair == Pair::BOTH) {
+	else if (pair == PAIR::BOTH) {
 
 		return "_pb";
 	}
 
 	return "";
 }
-const std::string BaccaratRecord::getStringForContinuity(Continuation continuation)
+const std::string BaccaratRecord::getStringForContinuity(CONTINUATION continuation)
 {
-	if (continuation == Continuation::KEEP){
+	if (continuation == CONTINUATION::KEEP){
 
 		return "_keep";
 	}
-	else if (continuation == Continuation::INVERSE) {
+	else if (continuation == CONTINUATION::INVERSE) {
 
 		return "_inverse";
 	}

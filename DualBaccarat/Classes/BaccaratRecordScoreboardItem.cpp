@@ -25,17 +25,12 @@ bool BaccaratRecordScoreboardItem::init(const std::string& icon, const std::stri
 	_icon->setAnchorPoint(Point(0, 0));
 	_icon->setPosition(Vec2(0, 0));
 	this->addChild(_icon);
-	 
-	_name = Sprite::create(name);
-	_name->setAnchorPoint(Point(0, 0));
-	_name->setPosition(Vec2(70, 0));	
-	this->addChild(_name);
 
 	_value = Label::createWithTTF("0", _font, 40);
 	_value->setAnchorPoint(Point(0, 0));
-	_value->setPosition(340, 0);
+	_value->setPosition(70, 0);
 	_value->setDimensions(60, 60);
-	_value->setHorizontalAlignment(TextHAlignment::RIGHT);
+	_value->setHorizontalAlignment(TextHAlignment::CENTER);
 	_value->setVerticalAlignment(TextVAlignment::CENTER);
 	this->addChild(_value);
 

@@ -3,21 +3,6 @@
 
 #include "PublicApi.h"
 
-enum class Pair
-{
-	NONE,
-	PLAYER,
-	BANKER,
-	BOTH
-};
-
-enum class Continuation
-{
-	NONE,
-	KEEP,
-	INVERSE
-};
-
 class BaccaratRecordItem
 {
 public:
@@ -26,7 +11,7 @@ public:
 	~BaccaratRecordItem();
 
 	void reset();
-	Winner reverseWinner();
+	WINNER reverseWinner();
 
 	bool _isUsed;
 	bool _isDrawn;
@@ -36,9 +21,9 @@ public:
 	int _column;
 	int _number;
 	int _columnCount;
-	Continuation _continuation;
-	Winner _winner;
-	Pair _pair;
+	CONTINUATION _continuation;
+	WINNER _winner;
+	PAIR _pair;
 	BaccaratRecordItem *_root;
 };
 

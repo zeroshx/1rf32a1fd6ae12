@@ -114,6 +114,7 @@ void SceneLobby::initView()
 	this->addChild(_letterBoard, 1);
 
 	_progressCircle = ProgressCircle::create();
+	_progressCircle->setDelegate(this);
 	this->addChild(_progressCircle, 10);
 
 	auto notice = MenuItemImage::create("lobby/menu_notice_normal.png",
@@ -166,18 +167,15 @@ void SceneLobby::initView()
 		baccarat, roadmap,
 		configuration, nullptr); 
 	_menu->setPosition(Vec2::ZERO);
-	_menu->setSwallowsTouches(false);
 	this->addChild(_menu, 1);
 }
 
 void SceneLobby::onBaccaratSelected()
 {
-	CCLOG(__FUNCTION__);	
+	CCLOG(__FUNCTION__);
 	auto baccaratMode = BaccaratMode::create();
-	if (baccaratMode) {
-		baccaratMode->setDelegate(this);
-		baccaratMode->show();
-	}
+	baccaratMode->setDelegate(this, this);
+	baccaratMode->show();
 }
 void SceneLobby::onRoadmapSelected()
 {
@@ -187,7 +185,9 @@ void SceneLobby::onRoadmapSelected()
 void SceneLobby::onNoticeSelected()
 {
 	CCLOG(__FUNCTION__);
-	_progressCircle->run();
+	auto notice = NoticeBoard::create();
+	notice->setDelegate(this);
+	notice->show();
 }
 void SceneLobby::onCafeSelected()
 {
@@ -198,18 +198,21 @@ void SceneLobby::onRankingSelected()
 {
 	CCLOG(__FUNCTION__);
 	auto ranking = Ranking::create();
-	if (ranking) {
-		for (int i = 0; i < 50; i++)
-		{
-			ranking->setItem(i, TIER::BRONZE, "Zeros", "123,123,123");
-		}
-		ranking->show();
+	ranking->setDelegate(this);
+
+	for (int i = 0; i < 50; i++)
+	{
+		ranking->setItem(i, TIER::BRONZE, "Zeros", "123,123,123");
 	}
+
+	ranking->show();
 }
 void SceneLobby::onMissionSelected()
 {
 	CCLOG(__FUNCTION__);
-	
+	auto mission_manager = MissionManager::create();
+	mission_manager->setDelegate(this);
+	mission_manager->show();
 }
 void SceneLobby::onTierSelected()
 {
@@ -220,7 +223,8 @@ void SceneLobby::onStoreSelected()
 {
 	CCLOG(__FUNCTION__);
 	auto store = Store::create();
-	this->addChild(store, 2);
+	store->setDelegate(this, this);
+	store->show();
 }
 void SceneLobby::onConfigurationSelected()
 {
@@ -277,4 +281,30 @@ void SceneLobby::onWorldClassSelected(BaccaratMode* pSender)
 {
 	CCLOG(__FUNCTION__);
 	
+}
+void SceneLobby::onItembought(const std::string& itemCode)
+{
+	CCLOG(__FUNCTION__);
+
+}
+void SceneLobby::onModuleInit()
+{
+	CCLOG(__FUNCTION__);	
+}
+void SceneLobby::onModuleBegan()
+{
+	CCLOG(__FUNCTION__);
+	_menu->setEnabled(false);
+	_progressCircle->run();
+}
+void SceneLobby::onModuleWorking()
+{
+	CCLOG(__FUNCTION__);
+
+}
+void SceneLobby::onModuleEnded()
+{
+	CCLOG(__FUNCTION__);
+	_menu->setEnabled(true);
+	_progressCircle->stop();
 }

@@ -1,7 +1,6 @@
 ﻿#ifndef  _APP_DELEGATE_H_
 #define  _APP_DELEGATE_H_
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "SceneBaccaratSinglePlay.h"
 #include "SceneLobby.h"

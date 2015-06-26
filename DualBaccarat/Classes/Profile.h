@@ -1,7 +1,6 @@
 ﻿#ifndef __PROFILE_H__
 #define __PROFILE_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "Sprabel.h"
 

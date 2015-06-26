@@ -1,7 +1,6 @@
 ﻿#ifndef __SCENE_LOGIN_H__
 #define __SCENE_LOGIN_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "AppUser.h"
 #include "DialogBuilder.h"

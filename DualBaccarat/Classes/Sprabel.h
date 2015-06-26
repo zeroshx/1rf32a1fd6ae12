@@ -1,7 +1,6 @@
 ﻿#ifndef __SPRABEL_H__
 #define __SPRABEL_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 
 USING_NS_CC;

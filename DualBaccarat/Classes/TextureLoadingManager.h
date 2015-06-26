@@ -1,7 +1,6 @@
 ﻿#ifndef __LOADING_MANAGER_H__
 #define __LOADING_MANAGER_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "TextureLoadingDelegate.h"
 

@@ -1,7 +1,6 @@
 ﻿#ifndef __LETTER_BOARD_H__
 #define __LETTER_BOARD_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 
 #define LETTERBOARD_WIDTH		DESIGN_WIDTH
@@ -14,13 +13,6 @@ USING_NS_CC;
 class LetterBoard : public ClippingRectangleNode
 {
 public:
-
-	enum class MODULE_STATE
-	{
-		IDLE,
-		START,
-		DONE
-	};
 
 	LetterBoard();
 	~LetterBoard();

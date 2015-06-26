@@ -4,13 +4,13 @@ USING_NS_CC;
 
 AppUser::AppUser()
 {
-	ID = "None";
-	Name = "None";
-	Number = "None";
-	Platform = "None";
-	IMEI = "None";
-	IMSI = "None";
-	Origin = "None";
+	_id = "None";
+	_name = "None";
+	_number = "None";
+	_platform = "None";
+	_imei = "None";
+	_imsi = "None";
+	_originData = "None";
 }
 AppUser::~AppUser()
 {
@@ -24,66 +24,83 @@ AppUser* AppUser::getInstance()
 
 void AppUser::setID(const std::string& id)
 {
-	ID = id;
+	_id = id;
+}
+const std::string& AppUser::getID()
+{
+	return _id;
 }
 void AppUser::setName(const std::string& name)
 {
-	Name = name;
-}
-void AppUser::setNumber(const std::string& number)
-{
-	Number = number;
-}
-void AppUser::setPlatform(const std::string& platform)
-{
-	Platform = platform;
-}
-void AppUser::setIMEI(const std::string& imei)
-{
-	IMEI = imei;
-}
-void AppUser::setIMSI(const std::string& imsi)
-{
-	IMSI = imsi;
-}
-void AppUser::setOrigin(const std::string& origin)
-{
-	Origin = origin;
-}
-
-const std::string& AppUser::getID()
-{
-	return ID;
+	_name = name;
 }
 const std::string& AppUser::getName()
 {
-	return Name;
+	return _name;
+}
+void AppUser::setNumber(const std::string& number)
+{
+	_number = number;
 }
 const std::string& AppUser::getNumber()
 {
-	return Number;
+	return _number;
+}
+void AppUser::setPlatform(const std::string& platform)
+{
+	_platform = platform;
 }
 const std::string& AppUser::getPlatform()
 {
-	return Platform;
+	return _platform;
+}
+void AppUser::setIMEI(const std::string& imei)
+{
+	_imei = imei;
 }
 const std::string& AppUser::getIMEI()
 {
-	return IMEI;
+	return _imei;
+}
+void AppUser::setIMSI(const std::string& imsi)
+{
+	_imsi = imsi;
 }
 const std::string& AppUser::getIMSI()
 {
-	return IMSI;
+	return _imsi;
+}
+void AppUser::setOrigin(const std::string& origin)
+{
+	_originData = origin;
 }
 const std::string& AppUser::getOrigin()
 {
-	return Origin;
+	return _originData;
+}
+void AppUser::setChips(const std::string& chips)
+{
+	_chips = chips;
+}
+const std::string& AppUser::getChips()
+{
+	return _chips;
+}
+void AppUser::setChipsInt(int chips)
+{
+	_chips = StringUtils::format("%d", chips);
+}
+int AppUser::getChipsInt()
+{
+	int chips = atoi(_chips.c_str());
+	return chips;
 }
 
-void AppUser::parseOrigin()
+
+void AppUser::parseOriginData()
 {
 	rapidjson::Document doc;
-	if (doc.Parse<0>(Origin.c_str()).HasParseError()) {
+	if (doc.Parse<0>(_originData.c_str()).HasParseError()) {
 
 		log("AppUser origin parsing error : %s", doc.GetParseError());
 		return;

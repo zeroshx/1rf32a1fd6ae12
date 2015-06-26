@@ -8,11 +8,6 @@ Ranking::~Ranking()
 {
 
 }
-const std::string& Ranking::getModuleName()
-{
-	const static std::string moduleName("Ranking");
-	return moduleName;
-}
 Ranking* Ranking::create()
 {
 	Ranking* ranking = new (std::nothrow) Ranking();
@@ -25,10 +20,6 @@ Ranking* Ranking::create()
 }
 bool Ranking::init()
 {	
-	if (_director->getRunningScene()->getChildByName(getModuleName())) {
-		return false;
-	}
-
 	this->setContentSize(_visibleSize);
 
 	auto background = Sprite::create("ranking/background.png");
@@ -44,7 +35,6 @@ bool Ranking::init()
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(exit, NULL);
 	menu->setPosition(Vec2::ZERO);
-	menu->setSwallowsTouches(false);
 	this->addChild(menu);
 
 	// Scroll view setting
@@ -68,12 +58,13 @@ bool Ranking::init()
 	
 	this->setScale(0);
 	this->setOpacity(0);
-	this->setName(getModuleName());
 
 	return true;
 }
 void Ranking::show()
 {
+	_moduleDelegate->onModuleBegan();
+
 	auto action_0 = EaseBackOut::create(ScaleTo::create(0.5, 1));
 	auto action_1 = FadeIn::create(0.5);
 	auto action = Spawn::create(action_0, action_1, NULL);
@@ -87,6 +78,7 @@ void Ranking::destroy()
 }
 void Ranking::onExitClicked(Ref* pSender)
 {
+	_moduleDelegate->onModuleEnded();
 	this->destroy();
 }
 void Ranking::setItem(int ranking, TIER tier, const std::string nickName, const std::string rankPoint)
@@ -95,4 +87,8 @@ void Ranking::setItem(int ranking, TIER tier, const std::string nickName, const 
 	_rankingItem[ranking]->setTier(tier);
 	_rankingItem[ranking]->setNickName(nickName);
 	_rankingItem[ranking]->setRankPoint(rankPoint);
+}
+void Ranking::setDelegate(ModuleDelegate* md)
+{
+	_moduleDelegate = md;
 }

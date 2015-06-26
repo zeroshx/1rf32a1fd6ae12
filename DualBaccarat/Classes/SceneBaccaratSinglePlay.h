@@ -1,7 +1,6 @@
 ﻿#ifndef __SCENE_BACCARAT_SINGLEPLAY_H__
 #define __SCENE_BACCARAT_SINGLEPLAY_H__
 
-#include "cocos2d.h"
 #include "PublicApi.h"
 #include "AppUser.h"
 #include "DialogBuilder.h"
@@ -10,12 +9,18 @@
 #include "BaccaratRecord.h"
 #include "VirtualServer.h"
 #include "Dealer.h"
+#include "ModuleDelegate.h"
+#include "BettingManager.h"
+#include "MessageGuide.h"
 
 class SceneBaccaratSinglePlay : 
 	public Layer, 
 	public TextureLoadingDelegate, 
 	public DialogDelegate,
-	public VirtualServerDelegate
+	public VirtualServerDelegate,
+	public ModuleDelegate,
+	public BettingManagerDelegate,
+	public BaccaratRecordDelegate
 {
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -40,10 +45,15 @@ public:
 	virtual void onClickPositiveButton(Dialog* pDialog, int index);
 	virtual void onClickNegativeButton(Dialog* pDialog, int index);	
 
+	virtual void onStageReady();
 	virtual void onStageShuffle();
 	virtual void onStageBetting(int time);
 	virtual void onStageDealing(std::vector<PokerCard> cardset);
-	virtual void onStageGameover(Winner winner);
+	virtual void onStageGameover(WINNER winner, PAIR pair, std::vector<EXTRA_WINNER> extras);
+
+	virtual void onRequestBetting(BettingRecord paper);
+
+	virtual void onFullRecordBoard();
 
 	// listener
 	void addListener();
@@ -54,6 +64,12 @@ public:
 	
 	// init background view 
 	void initView();
+
+	// module delegate
+	virtual void onModuleInit();
+	virtual void onModuleBegan();
+	virtual void onModuleWorking();
+	virtual void onModuleEnded();
 
 	void menuCallback1(Ref* pSender);
 	void menuCallback2(Ref* pSender);
@@ -70,6 +86,7 @@ private:
 	BaccaratRecord *_record;
 	VirtualServer *_server;
 	Dealer *_dealer;
+	BettingManager *_betManager;
 };
 
 #endif // __SCENE_BACCARAT_SINGLEPLAY_H__

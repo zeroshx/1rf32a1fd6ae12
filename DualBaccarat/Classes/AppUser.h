@@ -19,33 +19,40 @@ public:
 	~AppUser();
 
 	void setID(const std::string& id);
-	void setName(const std::string& name);
-	void setNumber(const std::string& number);
-	void setPlatform(const std::string& platform);
-	void setIMEI(const std::string& imei);
-	void setIMSI(const std::string& imsi);
-	void setOrigin(const std::string& origin);
-
 	const std::string& getID();
+	void setName(const std::string& name);
 	const std::string& getName();
+	void setNumber(const std::string& number);
 	const std::string& getNumber();
+	void setPlatform(const std::string& platform);
 	const std::string& getPlatform();
+	void setIMEI(const std::string& imei);
 	const std::string& getIMEI();
+	void setIMSI(const std::string& imsi);
 	const std::string& getIMSI();
+	void setOrigin(const std::string& origin);
 	const std::string& getOrigin();
+	void setChips(const std::string& chips);	
+	const std::string& getChips();
+	void setChipsInt(int chips);
+	int getChipsInt();	
 
-	void parseOrigin();
+	void parseOriginData();
 
 private:
 
-	std::string ID;
-	std::string Name;
-	std::string Number;
-	std::string Platform;
-	std::string IMEI;
-	std::string IMSI;
+	// User Login Info
+	std::string _id;
+	std::string _name;
+	std::string _number;
+	std::string _platform;
+	std::string _imei;
+	std::string _imsi;
 
-	std::string Origin;
+	std::string _originData;
+
+	// SingleGame Info
+	std::string _chips;
 };
 
 #endif // __BACCARAT_PLAYER_H__

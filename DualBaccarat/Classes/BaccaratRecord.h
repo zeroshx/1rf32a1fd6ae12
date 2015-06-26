@@ -1,11 +1,11 @@
 ﻿#ifndef __BACCARAT_RECORD_H__
 #define __BACCARAT_RECORD_H__
 
-#include "cocos2d.h"
 #include "ui\CocosGUI.h"
 #include "PublicApi.h"
 #include "BaccaratRecordItem.h"
 #include "BaccaratRecordScoreboardItem.h"
+#include "BaccaratRecordDelegate.h"
 
 USING_NS_CC;
 
@@ -22,57 +22,22 @@ USING_NS_CC;
 #define DIV2_FRAME_SIZE		Size(780, 180)
 #define DIV2_CONTENT_SIZE	Size(1800, 180)
 
-enum class RecordType
-{
-	PROTOTYPE,
-	BASE,
-	DIVINATION1TH,
-	DIVINATION2ND,
-	DIVINATION3RD,
-	NEXT_DIV1TH,
-	NEXT_DIV2ND,
-	NEXT_DIV3RD,
-};
-
-enum DIV_DEPTH
-{
-	FIRST = 1,
-	SECOND = 2,
-	THIRD = 3
-};
-
-enum SCORE_TYPE
-{
-	BANKER = 0,
-	PLAYER = 1,
-	TIE = 2,
-	BANKER_PAIR = 3,
-	PLAYER_PAIR = 4,
-	TOTAL = 5
-};
-
 class BaccaratRecord : public cocos2d::Layer
 {
 public:
-
-	enum class MODULE_STATE
-	{
-		IDLE,
-		START,
-		DONE
-	};
-  
+	  
 	BaccaratRecord();
 	~BaccaratRecord();
 
 	static BaccaratRecord* create();
 	virtual bool init();
 
-	void push(Winner winner, Pair pair);
+	void push(WINNER winner, PAIR pair);
 	void show();
 	void hide();
 	void reset();
-	void drawLatestRecord();	
+	void drawLatestRecord();
+	void setDelegate(BaccaratRecordDelegate *brd);
 	
 private:
 
@@ -84,20 +49,20 @@ private:
 	void drawLatestDivination(int depth);
 	void drawNextRecord();
 	void drawRecommendedItem();
-	void updateScoreboard(Winner winner, Pair pair);
+	void updateScoreboard(WINNER winner, PAIR pair);
 
-	void chartPrototype(Winner winner, Pair pair);
-	void chartBase(Winner winner, Pair pair);
+	void chartPrototype(WINNER winner, PAIR pair);
+	void chartBase(WINNER winner, PAIR pair);
 	void chartDivination(DIV_DEPTH depth);
-	void chartNextRecord(Winner winner);
+	void chartNextRecord(WINNER winner);
 	void findRecommendedItem();
-	Winner findNextConsecutiveItem(BaccaratRecordItem* lastItem, DIV_DEPTH depth);
-	Winner findNextConsecutiveItem(DIV_DEPTH depth);
+	WINNER findNextConsecutiveItem(BaccaratRecordItem* lastItem, DIV_DEPTH depth);
+	WINNER findNextConsecutiveItem(DIV_DEPTH depth);
 
-	const std::string getImageName(RecordType type, Winner winner, Pair pair, Continuation continuity);
-	const std::string getStringForWinner(Winner winner);
-	const std::string getStringForPair(Pair pair);
-	const std::string getStringForContinuity(Continuation continuity);
+	const std::string getImageName(RECORD_TYPE type, WINNER winner, PAIR pair, CONTINUATION continuity);
+	const std::string getStringForWinner(WINNER winner);
+	const std::string getStringForPair(PAIR pair);
+	const std::string getStringForContinuity(CONTINUATION continuity);
 
 	void onFrameTriggered(Ref *pSender);
 	void onFrameAnimCompleted();
@@ -129,6 +94,8 @@ private:
 	ScoreboardItem *_scoreType[6];
 
 	MODULE_STATE _state;
+
+	BaccaratRecordDelegate *_delegate;
 };
 
 #endif // __BACCARAT_RECORD_H__
