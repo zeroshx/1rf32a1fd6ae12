@@ -1,5 +1,7 @@
 ﻿#include "MessageGuide.h"
 
+std::mutex MessageGuide::_mutex;
+
 MessageGuide::MessageGuide()
 {
 }
@@ -12,11 +14,21 @@ MessageGuide* MessageGuide::getInstance()
 	static MessageGuide ins;
 	return &ins;
 }
-ClippingRectangleNode* MessageGuide::create(MESSAGE_TYPE type, const std::string& msg)
-{	
-	//setClippingRegion(Rect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT));
-	//setAnchorPoint(Point(0, 0));
-	//setPosition(Vec2(0, 0));
+void MessageGuide::create(MESSAGE_TYPE type, const std::string& msg)
+{		
+	std::lock_guard<std::mutex> lock(_mutex);
+	ClippingRectangleNode* lastNode = nullptr;
+	if (_list.size() > 0) {
+		lastNode = _list.back();
+		ImageView* bg = static_cast<ImageView*>(lastNode->getChildByTag(2));
+		if (bg) {
+			Label* text = static_cast<Label*>(bg->getChildByTag(1));
+			if (text && text->getString() == msg) {
+				return;
+			}
+		}
+	}
+
 	std::string path;
 	if (type == POSITIVE) {
 		path = "bg_positive.png";
@@ -29,8 +41,10 @@ ClippingRectangleNode* MessageGuide::create(MESSAGE_TYPE type, const std::string
 	}
 
 	auto text = Label::createWithTTF(msg, _font, 40);
+	text->setTag(1);
 
 	auto background = ImageView::create("message_guide/" + path);
+	background->setTag(2);
 	background->ignoreContentAdaptWithSize(false);
 	background->setScale9Enabled(true);
 	background->setContentSize(text->getContentSize() + Size(40,40));
@@ -46,13 +60,14 @@ ClippingRectangleNode* MessageGuide::create(MESSAGE_TYPE type, const std::string
 	clippingNode->setClippingRegion(Rect(0, 0, background->getContentSize().width, background->getContentSize().height));
 	clippingNode->setAnchorPoint(Point(0.5, 0));
 		
-	if (_list.size() > 0) {
+	if (lastNode) {
 	
-		auto lastNode = _list.back();
 		if (lastNode->getPositionY() < 200) {
+
 			clippingNode->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 300));
 		}
 		else {
+
 			clippingNode->setPosition(Vec2(_visibleSize.width / 2, lastNode->getPositionY() - clippingNode->getContentSize().height));
 		}
 	}
@@ -68,9 +83,9 @@ ClippingRectangleNode* MessageGuide::create(MESSAGE_TYPE type, const std::string
 	auto act = Sequence::create(act_move, act_delay, act_remove, nullptr);
 	background->runAction(act);
 
+	_director->getRunningScene()->addChild(clippingNode);
+
 	_list.push_back(clippingNode);
-	
-	return clippingNode;
 }
 void MessageGuide::onMessageRemoved(Ref *pSender)
 {

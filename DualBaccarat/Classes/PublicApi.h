@@ -13,6 +13,8 @@
 #define _origin			_director->getVisibleOrigin()
 #define _center			Vec2(_visibleSize.width/2 + _origin.x, _visibleSize.height/2 + _origin.y)
 
+#define TOAST(type, msg)	MessageGuide::getInstance()->create(type, msg);
+
 #define _user			AppUser::getInstance()
 
 #define _font			"NanumGothic_Coding.ttf"

@@ -27,13 +27,13 @@ public:
 	~MessageGuide();
 	
 	static MessageGuide* getInstance();
-	ClippingRectangleNode* create(MESSAGE_TYPE type, const std::string& msg);
-	
+	void create(MESSAGE_TYPE type, const std::string& msg);
+		
 private:
 
 	void onMessageRemoved(Ref *pSender);
 
-	std::list<ClippingRectangleNode*> _list;
+	std::list<ClippingRectangleNode*> _list;	
+	static std::mutex _mutex;
 };
-
 #endif // __MESSAGE_GUIDE_H__

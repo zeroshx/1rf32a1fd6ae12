@@ -207,7 +207,7 @@ void BettingManager::reset()
 	_myChips->setString(stringToMoney(_user->getChips()));
 
 	_isBetted = false;
-	_isOpened = false;	
+	_isOpened = false;
 }
 void BettingManager::setDelegate(BettingManagerDelegate *bmd)
 {
@@ -259,10 +259,8 @@ void BettingManager::onChipTouched(Ref *sender, int money)
 				_trialBet._total += remain;
 			}
 			else {
-
-
-				auto mg = MessageGuide::getInstance();
-				this->addChild(mg->create(MessageGuide::NORMAL, "You can bet maximum 1000000"));
+				
+				TOAST(MessageGuide::NORMAL, "You can bet maximum 1000000.");
 			}
 		}
 		else  //
@@ -276,14 +274,12 @@ void BettingManager::onChipTouched(Ref *sender, int money)
 				}
 				else {
 
-					auto mg = MessageGuide::getInstance();
-					this->addChild(mg->create(MessageGuide::NEGATIVE, "You have not money enough"));
+					TOAST(MessageGuide::NEGATIVE, "You have not money enough.");
 				}
 			}
 			else {
 
-				auto mg = MessageGuide::getInstance();
-				this->addChild(mg->create(MessageGuide::NORMAL, "You can bet maximum 1000000"));
+				TOAST(MessageGuide::NORMAL, "You can bet maximum 1000000.");
 			}
 		}
 
@@ -292,16 +288,18 @@ void BettingManager::onChipTouched(Ref *sender, int money)
 	}
 	else {
 
-		auto mg = MessageGuide::getInstance();
-		this->addChild(mg->create(MessageGuide::NEGATIVE, "Select Betting Type."));
+		TOAST(MessageGuide::NEGATIVE, "Select Betting Type.");
 	}
 }
 void BettingManager::onRebetting(Ref *sender)
 {
 	if (_isBetted) {
 
-		auto mg = MessageGuide::getInstance();
-		this->addChild(mg->create(MessageGuide::NEGATIVE, "already you new bet for this round."));
+		TOAST(MessageGuide::NEGATIVE, "already you new bet for this round.");
+	}
+	else if (_previousBet._total == 0) {
+
+		TOAST(MessageGuide::NEGATIVE, "Not exist previous bet report.");
 	}
 	else {
 
@@ -315,8 +313,7 @@ void BettingManager::onBetting()
 {
 	if (_trialBet._total == 0) {
 		
-		auto mg = MessageGuide::getInstance();
-		this->addChild(mg->create(MessageGuide::NEGATIVE, "Select type and betting your chip."));
+		TOAST(MessageGuide::NEGATIVE, "Select type and betting your chip.");
 	}
 	else {
 				
@@ -332,8 +329,7 @@ void BettingManager::onBetting()
 
 		_delegate->onRequestBetting(_finalBet);
 
-		auto mg = MessageGuide::getInstance();
-		this->addChild(mg->create(MessageGuide::POSITIVE, "Betting Complete."));
+		TOAST(MessageGuide::POSITIVE, "Betting Complete.");
 	}
 }
 void BettingManager::onBettingCancel()
@@ -346,14 +342,16 @@ void BettingManager::onBettingCancel()
 void BettingManager::bettingOpen()
 {
 	if (!_isOpened) {
+
 		enable();
-		_isOpened = false;
+		_isOpened = true;
+		TOAST(MessageGuide::NORMAL, "Betting Start !!!");
 	}
 }
 void BettingManager::bettingClose()
 {
 	disable();
-	onBettingCancel();
+	onBettingCancel();	
 
 	if (_isBetted) {
 
@@ -388,7 +386,7 @@ void BettingManager::throwChip(int type, int money)
 	{
 		if (iter->getTag() == type)
 		{
-
+			
 		}
 	}
 
