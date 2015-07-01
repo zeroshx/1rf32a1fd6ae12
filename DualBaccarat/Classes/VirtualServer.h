@@ -4,7 +4,6 @@
 #include "PublicApi.h"
 #include "PokerCard.h"
 #include "VirtualServerDelegate.h"
-#include "AppUser.h"
 
 USING_NS_CC;
 
@@ -38,6 +37,9 @@ public:
 	void run();
 	void stop();
 
+	void serverPause();
+	void serverResume();
+
 	void sendUserBetReport(BettingRecord report);
 	void setDelegate(VirtualServerDelegate *del);
 	void requestCardShuffle();
@@ -56,7 +58,7 @@ private :
 	void selectCard();
 	int findUnusedCard();
 	void calculateGameResult();
-	void cardShuffle();
+	void cardShuffle();	
 
 	GAME_STATE _state;
 	int _betTime;

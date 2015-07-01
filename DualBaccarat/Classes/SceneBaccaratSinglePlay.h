@@ -2,7 +2,6 @@
 #define __SCENE_BACCARAT_SINGLEPLAY_H__
 
 #include "PublicApi.h"
-#include "AppUser.h"
 #include "DialogBuilder.h"
 #include "ProgressCircle.h"
 #include "TextureLoadingManager.h"
@@ -12,6 +11,7 @@
 #include "ModuleDelegate.h"
 #include "BettingManager.h"
 #include "MessageGuide.h"
+//#include "Money.h"
 
 class SceneBaccaratSinglePlay : 
 	public Layer, 

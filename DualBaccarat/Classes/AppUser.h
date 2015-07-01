@@ -32,10 +32,16 @@ public:
 	const std::string& getIMSI();
 	void setOrigin(const std::string& origin);
 	const std::string& getOrigin();
+	
 	void setChips(const std::string& chips);	
 	const std::string& getChips();
-	void setChipsInt(int chips);
-	int getChipsInt();	
+	void setChipsInt(long long chips);
+	long long getChipsInt();
+
+	void setMaxBet(const std::string& max);
+	const std::string& getMaxBet();
+	void setMaxBetInt(int max);
+	int getMaxBetInt();
 
 	void parseOriginData();
 
@@ -53,6 +59,7 @@ private:
 
 	// SingleGame Info
 	std::string _chips;
+	std::string _maxBet;
 };
 
-#endif // __BACCARAT_PLAYER_H__
+#endif // __APP_USER_H__

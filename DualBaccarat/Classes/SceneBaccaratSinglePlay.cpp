@@ -28,7 +28,12 @@ bool SceneBaccaratSinglePlay::init()
 	// background init
 	initView();
 
-    return true;
+	auto btn = Button::create("CloseNormal.png", "CloseSelected.png");
+	btn->setPosition(Vec2(1900, 1050));
+	btn->addClickEventListener(CC_CALLBACK_1(SceneBaccaratSinglePlay::menuCallback1, this));
+	this->addChild(btn);
+
+	return true;
 }
 void SceneBaccaratSinglePlay::onEnter()
 {
@@ -40,7 +45,8 @@ void SceneBaccaratSinglePlay::onEnterTransitionDidFinish()
 	
 	addListener();
 
-	_user->setChips("10000000");
+	_user->setChips("1000000000000");
+	_user->setMaxBet("100000000");
 
 	_server->run();
 }
@@ -133,11 +139,20 @@ void SceneBaccaratSinglePlay::loadResources()
 }
 void SceneBaccaratSinglePlay::menuCallback1(Ref* pSender)
 {
-	//CCLOG(__FUNCTION__);
-	//_record->push(WINNER::BANKER, PAIR::PLAYER);
-	//_record->drawLatestRecord();
+	static bool toggle = true;
 
+	if (toggle){
+		
+		_server->serverPause();
+		toggle = false;
+		TOAST(MessageGuide::NEGATIVE, "Server Stop.");
+	}
+	else {
 
+		_server->serverResume();
+		toggle = true;
+		TOAST(MessageGuide::POSITIVE, "Server Run.");
+	}
 }
 void SceneBaccaratSinglePlay::menuCallback2(Ref* pSender)
 {

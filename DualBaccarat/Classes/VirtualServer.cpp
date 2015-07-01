@@ -427,12 +427,12 @@ void VirtualServer::sendUserBetReport(BettingRecord report)
 {
 	CCLOG("===============================================================");
 	CCLOG("===============================================================");
-	CCLOG("Before User Chips : %d", _user->getChipsInt());
+	CCLOG("Before User Chips : %lld", _user->getChipsInt());
 
 	_user->setChipsInt(_user->getChipsInt() - (report._total - _userBetReport._total));
 	_userBetReport = report;
 
-	CCLOG("After User Chips : %d", _user->getChipsInt());
+	CCLOG("After User Chips : %lld", _user->getChipsInt());
 	CCLOG("Player : %d", _userBetReport._type[BET_TYPE::PLAYER]);
 	CCLOG("Player Pair: %d", _userBetReport._type[BET_TYPE::PLAYER_PAIR]);
 	CCLOG("Player Natural: %d", _userBetReport._type[BET_TYPE::PLAYER_NATURAL]);
@@ -503,9 +503,17 @@ void VirtualServer::calculateGameResult()
 	}
 	
 	_user->setChipsInt(_user->getChipsInt() + total);
-	CCLOG("User Chips : %d", _user->getChipsInt());
+	CCLOG("User Chips : %lld", _user->getChipsInt());
 }
 void VirtualServer::requestCardShuffle()
 {
-	_shuffle = true;
+	_shuffle = true;	
+}
+void VirtualServer::serverResume()
+{
+	this->resumeSchedulerAndActions();
+}
+void VirtualServer::serverPause()
+{
+	this->pauseSchedulerAndActions();
 }

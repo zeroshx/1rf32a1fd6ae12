@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "MessageGuide.h"
+#include "AppUser.h"
+//#include "Money.h"
 
 #define DESIGN_WIDTH	1920
 #define DESIGN_HEIGHT	1080
@@ -195,25 +197,7 @@ namespace ScoreType
 }
 using ScoreType::SCORE_TYPE;
 
-#define COUNT_BET_TYPE 9
-class BettingRecord
-{
-public:
-
-	int _total;
-	int _type[COUNT_BET_TYPE];
-
-	void reset()
-	{
-		_total = 0;
-		for (int i = 0; i < COUNT_BET_TYPE; i++)
-		{
-			_type[i] = 0;
-		}
-	}
-};
-
-static const std::string stringToMoney(const std::string& str)
+static const std::string ENMONEY(const std::string& str)
 {
 	std::string src = str;
 	std::string dest;
@@ -233,6 +217,42 @@ static const std::string stringToMoney(const std::string& str)
 
 	return dest;
 }
+static const std::string DEMONEY(const std::string& str)
+{
+	std::string src = str;
+	std::string dest;
+
+	while (src.length() > 0)
+	{
+		if (src.back() != ','){
+			dest.insert(dest.begin(), src.back());
+			src.pop_back();
+		}
+		else {
+			src.pop_back();
+		}
+	}
+
+	return dest;
+}
+
+#define COUNT_BET_TYPE 9
+class BettingRecord
+{
+public:
+
+	int _total;
+	int _type[COUNT_BET_TYPE];
+
+	void reset()
+	{
+		_total = 0;
+		for (int i = 0; i < COUNT_BET_TYPE; i++)
+		{
+			_type[i] = 0;
+		}
+	}
+};
 
 class PublicApi
 {

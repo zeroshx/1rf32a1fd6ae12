@@ -2,7 +2,6 @@
 #define __SCENE_INTRO_H__
 
 #include "PublicApi.h"
-#include "AppUser.h"
 #include "DialogBuilder.h"
 #include "ProgressCircle.h"
 #include "TextureLoadingManager.h"

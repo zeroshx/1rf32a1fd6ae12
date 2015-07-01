@@ -28,9 +28,13 @@ bool BettingManager::init()
 	
 	initBettingInfo();
 
+	initChipZone();
+
 	reset();
 
 	disable();
+
+	_previousBet.reset();
 
 	return true;
 }
@@ -125,53 +129,60 @@ void BettingManager::initBettingType()
 	_betBoard->setPosition(_center);
 	this->addChild(_betBoard);
 
+	auto betLayer = Node::create();
+	betLayer->setTag(BET_LAYER_TAG);
+	betLayer->setContentSize(_betBoard->getContentSize());
+	betLayer->setAnchorPoint(Point(0.5, 0.5));
+	betLayer->setPosition(_betBoard->getContentSize() / 2);
+	_betBoard->addChild(betLayer);
+
 	auto field_pn = ImageView::create("betting_manager/touch_field.png");
 	field_pn->setOpacity(0);
 	field_pn->setTag(BET_TYPE::PLAYER_NATURAL);
 	field_pn->setTouchEnabled(true);
 	field_pn->addClickEventListener(CC_CALLBACK_1(BettingManager::onBettingTypeTouched, this));
 	field_pn->setPosition(Vec2(250, 378));
-	_betBoard->addChild(field_pn);
+	betLayer->addChild(field_pn);
 
 	auto field_p = field_pn->clone();
 	field_p->setTag(BET_TYPE::PLAYER);
 	field_p->setPosition(Vec2(575, 378));
-	_betBoard->addChild(field_p);
+	betLayer->addChild(field_p);
 
 	auto field_pp = field_pn->clone();
 	field_pp->setTag(BET_TYPE::PLAYER_PAIR);
 	field_pp->setPosition(Vec2(900, 378));
-	_betBoard->addChild(field_pp);
+	betLayer->addChild(field_pp);
 
 	auto field_big = field_pn->clone();
 	field_big->setTag(BET_TYPE::BIG);
 	field_big->setPosition(Vec2(230, 250));
-	_betBoard->addChild(field_big);
+	betLayer->addChild(field_big);
 
 	auto field_tie = field_pn->clone();
 	field_tie->setTag(BET_TYPE::TIE);
 	field_tie->setPosition(Vec2(575, 250));
-	_betBoard->addChild(field_tie);
+	betLayer->addChild(field_tie);
 
 	auto field_small = field_pn->clone();
 	field_small->setTag(BET_TYPE::SMALL);
 	field_small->setPosition(Vec2(920, 250));
-	_betBoard->addChild(field_small);
+	betLayer->addChild(field_small);
 
 	auto field_bn = field_pn->clone();
 	field_bn->setTag(BET_TYPE::BANKER_NATURAL);
 	field_bn->setPosition(Vec2(200, 100));
-	_betBoard->addChild(field_bn);
+	betLayer->addChild(field_bn);
 
 	auto field_b = field_pn->clone();
 	field_b->setTag(BET_TYPE::BANKER);
 	field_b->setPosition(Vec2(575, 100));
-	_betBoard->addChild(field_b);
+	betLayer->addChild(field_b);
 
 	auto field_bp = field_pn->clone();
 	field_bp->setTag(BET_TYPE::BANKER_PAIR);
 	field_bp->setPosition(Vec2(950, 100));
-	_betBoard->addChild(field_bp);
+	betLayer->addChild(field_bp);
 }
 void BettingManager::initBettingInfo()
 {
@@ -193,6 +204,37 @@ void BettingManager::initBettingInfo()
 	_myChips->setPosition(Vec2(bg_myChips->getContentSize().width - 50, bg_myChips->getContentSize().height / 2));
 	bg_myChips->addChild(_myChips);
 }
+void BettingManager::initChipZone()
+{
+	float interval = CHIP_ZONE_INTERVAL;
+
+	for (int i = 0; i < COUNT_BET_TYPE; i++)
+	{
+		_chipZone[i][0]._offset = Vec2(-2 * interval, interval);
+		_chipZone[i][1]._offset = Vec2(-interval, interval);
+		_chipZone[i][2]._offset = Vec2(0, interval);
+		_chipZone[i][3]._offset = Vec2(interval, interval);
+		_chipZone[i][4]._offset = Vec2(2 * interval, interval);
+
+		_chipZone[i][5]._offset = Vec2(-0.5 * interval, 0);
+		_chipZone[i][6]._offset = Vec2(-1.5 * interval, 0);
+		_chipZone[i][7]._offset = Vec2(-2.5 * interval, 0);
+		_chipZone[i][8]._offset = Vec2(0.5 * interval, 0);
+		_chipZone[i][9]._offset = Vec2(1.5 * interval, 0);
+		_chipZone[i][10]._offset = Vec2(2.5 * interval, 0);
+
+		_chipZone[i][11]._offset = Vec2(-2 * interval, -interval);
+		_chipZone[i][12]._offset = Vec2(-interval, -interval);
+		_chipZone[i][13]._offset = Vec2(0, -interval);
+		_chipZone[i][14]._offset = Vec2(interval, -interval);
+		_chipZone[i][15]._offset = Vec2(2 * interval, -interval);
+
+		for (int j = 0; j < COUNT_CHIP_ZONE; j++)
+		{
+			_chipZone[i][j]._zOrder = j * 10;
+		}
+	}
+}
 void BettingManager::reset()
 {
 	_selectedType = BET_TYPE::NONE;
@@ -204,10 +246,20 @@ void BettingManager::reset()
 	_finalBet.reset();
 
 	_potChips->setString("0");
-	_myChips->setString(stringToMoney(_user->getChips()));
+	_myChips->setString(ENMONEY(_user->getChips()));
+	_userMaxBet = _user->getMaxBetInt();
 
 	_isBetted = false;
 	_isOpened = false;
+
+	for (int i = 0; i < COUNT_BET_TYPE; i++)
+	{
+		for (int j = 0; j < COUNT_CHIP_ZONE; j++)
+		{
+			_chipZone[i][j]._chipCount = 0;
+			_chipZone[i][j]._chipSize = 0;
+		}
+	}
 }
 void BettingManager::setDelegate(BettingManagerDelegate *bmd)
 {
@@ -240,15 +292,13 @@ void BettingManager::onBettingTypeTouched(Ref* sender)
 }
 void BettingManager::onChipTouched(Ref *sender, int money)
 {
-	int max = 1000000;
-
 	if (BET_TYPE::PLAYER <= _selectedType && _selectedType <= BET_TYPE::SMALL) {
 
 		if (money == -1) {	// max betting
 
-			if ((max - (_trialBet._total + _finalBet._total)) > 1000) {
+			if ((_userMaxBet - (_trialBet._total + _finalBet._total)) > 1000) {
 
-				int remain = max - (_trialBet._total + _finalBet._total);
+				int remain = _userMaxBet - (_trialBet._total + _finalBet._total);
 				remain = (remain / 1000) * 1000;
 
 				if (_user->getChipsInt() - _trialBet._total < remain) {
@@ -257,20 +307,25 @@ void BettingManager::onChipTouched(Ref *sender, int money)
 				}
 				_trialBet._type[_selectedType] += remain;
 				_trialBet._total += remain;
+
+				throwChip(_selectedType, remain);
 			}
 			else {
 				
-				TOAST(MessageGuide::NORMAL, "You can bet maximum 1000000.");
+				std::string str = StringUtils::format("You can not bet more than %s", ENMONEY(_user->getMaxBet()).c_str());
+				TOAST(MessageGuide::NORMAL, str);
 			}
 		}
 		else  //
 		{
-			if ((max - (_trialBet._total + _finalBet._total)) >= money) {
+			if ((_userMaxBet - (_trialBet._total + _finalBet._total)) >= money) {
 
 				if (_user->getChipsInt() - _trialBet._total >= money) {
 				
 					_trialBet._type[_selectedType] += money;
 					_trialBet._total += money;
+
+					throwChip(_selectedType, money);
 				}
 				else {
 
@@ -279,12 +334,13 @@ void BettingManager::onChipTouched(Ref *sender, int money)
 			}
 			else {
 
-				TOAST(MessageGuide::NORMAL, "You can bet maximum 1000000.");
+				std::string str = StringUtils::format("You can not bet more than %s", ENMONEY(_user->getMaxBet()).c_str());
+				TOAST(MessageGuide::NORMAL, str);
 			}
 		}
 
-		_potChips->setString(stringToMoney(StringUtils::format("%d", _trialBet._total + _finalBet._total)));
-		_myChips->setString(stringToMoney(StringUtils::format("%d", _user->getChipsInt() - _trialBet._total)));
+		_potChips->setString(ENMONEY(StringUtils::format("%ld", _trialBet._total + _finalBet._total)));
+		_myChips->setString(ENMONEY(StringUtils::format("%lld", _user->getChipsInt() - _trialBet._total)));
 	}
 	else {
 
@@ -305,8 +361,8 @@ void BettingManager::onRebetting(Ref *sender)
 
 		_finalBet = _previousBet;
 
-		_potChips->setString(stringToMoney(StringUtils::format("%d", _trialBet._total + _finalBet._total)));
-		_myChips->setString(stringToMoney(StringUtils::format("%d", _user->getChipsInt() - _trialBet._total)));
+		_potChips->setString(ENMONEY(StringUtils::format("%ld", _trialBet._total + _finalBet._total)));
+		_myChips->setString(ENMONEY(StringUtils::format("%lld", _user->getChipsInt() - _trialBet._total)));
 	}
 }
 void BettingManager::onBetting()
@@ -325,6 +381,18 @@ void BettingManager::onBetting()
 
 		_trialBet.reset();
 
+		Node *child;
+		while (true)
+		{
+			child = _betBoard->getChildByName(FAKE_BET);
+			if (child) {
+				child->setName(REAL_BET);
+			}
+			else {
+				break;
+			}
+		}
+
 		_isBetted = true;	
 
 		_delegate->onRequestBetting(_finalBet);
@@ -335,9 +403,21 @@ void BettingManager::onBetting()
 void BettingManager::onBettingCancel()
 {
 	_trialBet.reset();
+		
+	Node *child;
+	while (true)
+	{
+		child = _betBoard->getChildByName(FAKE_BET);
+		if (child) {
+			_betBoard->removeChild(child, true);
+		}
+		else {
+			break;
+		}
+	}
 
-	_potChips->setString(stringToMoney(StringUtils::format("%d", _finalBet._total)));
-	_myChips->setString(stringToMoney(_user->getChips()));
+	_potChips->setString(ENMONEY(StringUtils::format("%ld", _finalBet._total)));
+	_myChips->setString(ENMONEY(_user->getChips()));
 }
 void BettingManager::bettingOpen()
 {
@@ -364,17 +444,17 @@ void BettingManager::bettingClose()
 void BettingManager::throwChip(int type, int money)
 {
 	std::string chipImgPath[5] = {
-		"chip_5k_small.png",
-		"chip_20k_small.png",
-		"chip_100k_small.png",
-		"chip_500k_small.png",
-		"chip_1000k_small.png"
+		"chip_sample_1.png",
+		"chip_sample_1.png",
+		"chip_sample_1.png",
+		"chip_sample_1.png",
+		"chip_sample_1.png",
 	};
 	int chipSize[5] = { 5000, 20000, 100000, 500000, 1000000 };
 	int chipCnt[5] = { 0, 0, 0, 0, 0 };
 	int remainder = money;
 
-	// 1. calculate chip count.
+	// 1. calculate chip count.	
 	for (int i = 4; i >= 0; i--)
 	{
 		chipCnt[i] = getRequiredChips(remainder, chipSize[i]);  // 1000k
@@ -382,25 +462,85 @@ void BettingManager::throwChip(int type, int money)
 	}
 	
 	// 2. find bet type
-	for (auto iter : _betBoard->getChildren())
+	ImageView *target = nullptr;
+	Node *betLayer = _betBoard->getChildByTag(BET_LAYER_TAG);
+	for (auto iter : betLayer->getChildren())
 	{
 		if (iter->getTag() == type)
 		{
-			
+			target = static_cast<ImageView*>(iter);
 		}
 	}
-
-	// 3. find chip's position.
-
-
-	// 4. create chip sprite and adjust action each other.
+	Vec2 targetPos = target->getPosition();
+	
+	// 3. create chip sprite and adjust action each other.
 	for (int j = 0; j < 5; j++)
 	{
 		for (int k = 0; k < chipCnt[j]; k++)
 		{
-			//auto chip = Sprite::create("betting_manager/" + chipImgPath[j]);
+			// 4. find chip's position.
+			int index = findChipZone(type, chipSize[j]);
+
+			if (-1 < index && index < COUNT_CHIP_ZONE) {
+				
+				// 5. add chip in bet board.
+				Vec2 pos = targetPos + _chipZone[type][index]._offset + Vec2(0, _chipZone[type][index]._chipCount * 5);
+
+				auto chip = Sprite::create("betting_manager/" + chipImgPath[j]);
+				chip->setTag(type);
+				chip->setName(FAKE_BET);
+				chip->setPosition(pos);
+				_betBoard->addChild(chip, _chipZone[type][index]._zOrder);
+			}			
 		}
 	}
+}
+int BettingManager::findChipZone(int type, int chipSize)
+{
+	int index = -1;
+	bool end = false;
+	bool empty = false;
+
+	// 1. find number of empty zone.
+	for (int i = 0; i < COUNT_CHIP_ZONE; i++)
+	{
+		if (_chipZone[type][i]._chipCount == 0){
+
+			empty = true;
+			break;
+		}
+	}
+
+	// 2. find same chip size position.
+	for (int i = 0; i < COUNT_CHIP_ZONE; i++)
+	{
+		if (_chipZone[type][i]._chipSize == chipSize && _chipZone[type][i]._chipCount < 10){
+						
+			index = i;
+			_chipZone[type][i]._chipCount++;
+			end = true;
+			break;
+		}
+	}
+
+	// 3. find randomly zone.
+	if (!end && empty) {
+
+		while (true) {
+
+			int ran = RandomHelper::random_int(0, COUNT_CHIP_ZONE - 1);
+
+			if (_chipZone[type][ran]._chipCount == 0){
+
+				index = ran;
+				_chipZone[type][ran]._chipSize = chipSize;
+				_chipZone[type][ran]._chipCount = 1;
+				break;
+			}
+		}		
+	}
+
+	return index;
 }
 int BettingManager::getRequiredChips(int money, int chipSize)
 {

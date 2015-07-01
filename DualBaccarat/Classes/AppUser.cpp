@@ -86,16 +86,31 @@ const std::string& AppUser::getChips()
 {
 	return _chips;
 }
-void AppUser::setChipsInt(int chips)
+void AppUser::setChipsInt(long long chips)
 {
-	_chips = StringUtils::format("%d", chips);
+	_chips = StringUtils::format("%lld", chips);
 }
-int AppUser::getChipsInt()
-{
-	int chips = atoi(_chips.c_str());
-	return chips;
+long long AppUser::getChipsInt()
+{	
+	return atoll(_chips.c_str());
 }
 
+void AppUser::setMaxBet(const std::string& max)
+{
+	_maxBet = max;
+}
+const std::string& AppUser::getMaxBet()
+{
+	return _maxBet;
+}
+void AppUser::setMaxBetInt(int max)
+{
+	_maxBet = StringUtils::format("%d", max);
+}
+int AppUser::getMaxBetInt()
+{
+	return atoi(_maxBet.c_str());
+}
 
 void AppUser::parseOriginData()
 {
